@@ -1,0 +1,13 @@
+[debug] Packaging C:\Users\moesa\Desktop\CS474\maxwell_dausch_project\target\scala-2.13\maxwell_dausch_project_2.13-0.1.jar ...
+[debug] Input file mappings:
+[debug] 	Authenticate.class
+[debug] 	  C:\Users\moesa\Desktop\CS474\maxwell_dausch_project\target\scala-2.13\classes\Authenticate.class
+[debug] 	logback.xml
+[debug] 	  C:\Users\moesa\Desktop\CS474\maxwell_dausch_project\target\scala-2.13\classes\logback.xml
+[debug] 	main$.class
+[debug] 	  C:\Users\moesa\Desktop\CS474\maxwell_dausch_project\target\scala-2.13\classes\main$.class
+[debug] 	main$delayedInit$body.class
+[debug] 	  C:\Users\moesa\Desktop\CS474\maxwell_dausch_project\target\scala-2.13\classes\main$delayedInit$body.class
+[debug] 	main.class
+[debug] 	  C:\Users\moesa\Desktop\CS474\maxwell_dausch_project\target\scala-2.13\classes\main.class
+[debug] Done packaging.
