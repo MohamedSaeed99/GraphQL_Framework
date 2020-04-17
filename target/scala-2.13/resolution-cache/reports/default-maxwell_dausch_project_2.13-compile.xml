@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="ivy-report.xsl"?>
+<ivy-report version="1.0">
+	<info
+		organisation="default"
+		module="maxwell_dausch_project_2.13"
+		revision="0.1"
+		conf="compile"
+		confs="compile, runtime, test, provided, optional, compile-internal, runtime-internal, test-internal, plugin, pom, scala-tool"
+		date="20200416223615"/>
+	<dependencies>
+		<module organisation="org.apache.httpcomponents" name="httpclient">
+			<revision name="4.5.12" status="release" pubdate="20200304064655" resolver="public" artresolver="public" homepage="http://hc.apache.org/httpcomponents-client" downloaded="true" searched="true" default="false" conf="default, compile, runtime, default(compile), master" position="6">
+				<license name="Apache License, Version 2.0" url="http://www.apache.org/licenses/LICENSE-2.0.txt"/>
+				<metadata-artifact status="successful" details="" size="6609" time="93" location="C:\Users\moesa\.ivy2\cache\org.apache.httpcomponents\httpclient\ivy-4.5.12.xml" searched="true" original-local-location="C:\Users\moesa\.ivy2\cache\org.apache.httpcomponents\httpclient\ivy-4.5.12.xml.original" origin-is-local="false" origin-location="https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/4.5.12/httpclient-4.5.12.pom"/>
+				<caller organisation="default" name="maxwell_dausch_project_2.13" conf="compile" rev="4.5.12" rev-constraint-default="4.5.12" rev-constraint-dynamic="4.5.12" callerrev="0.1"/>
+				<artifacts>
+					<artifact name="httpclient" type="jar" ext="jar" status="successful" details="" size="778156" time="456" location="C:\Users\moesa\.ivy2\cache\org.apache.httpcomponents\httpclient\jars\httpclient-4.5.12.jar">
+						<origin-location is-local="false" location="https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/4.5.12/httpclient-4.5.12.jar"/>
+					</artifact>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="commons-codec" name="commons-codec">
+			<revision name="1.11" status="release" pubdate="20171017095430" resolver="public" artresolver="public" homepage="http://commons.apache.org/proper/commons-codec/" downloaded="true" searched="true" default="false" conf="compile, runtime(*), master(compile), runtime, compile(*), master" position="9">
+				<license name="Apache License, Version 2.0" url="https://www.apache.org/licenses/LICENSE-2.0.txt"/>
+				<metadata-artifact status="successful" details="" size="13966" time="81" location="C:\Users\moesa\.ivy2\cache\commons-codec\commons-codec\ivy-1.11.xml" searched="true" original-local-location="C:\Users\moesa\.ivy2\cache\commons-codec\commons-codec\ivy-1.11.xml.original" origin-is-local="false" origin-location="https://repo1.maven.org/maven2/commons-codec/commons-codec/1.11/commons-codec-1.11.pom"/>
+				<caller organisation="org.apache.httpcomponents" name="httpclient" conf="default, compile, runtime, master" rev="1.11" rev-constraint-default="1.11" rev-constraint-dynamic="1.11" callerrev="4.5.12"/>
+				<artifacts>
+					<artifact name="commons-codec" type="jar" ext="jar" status="successful" details="" size="335042" time="243" location="C:\Users\moesa\.ivy2\cache\commons-codec\commons-codec\jars\commons-codec-1.11.jar">
+						<origin-location is-local="false" location="https://repo1.maven.org/maven2/commons-codec/commons-codec/1.11/commons-codec-1.11.jar"/>
+					</artifact>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="org.apache.httpcomponents" name="httpcore">
+			<revision name="4.4.13" status="release" pubdate="20200109065743" resolver="public" artresolver="public" homepage="http://hc.apache.org/httpcomponents-core-ga" downloaded="true" searched="true" default="false" conf="compile, runtime(*), master(compile), runtime, compile(*), master" position="7">
+				<license name="Apache License, Version 2.0" url="http://www.apache.org/licenses/LICENSE-2.0.txt"/>
+				<metadata-artifact status="successful" details="" size="4968" time="81" location="C:\Users\moesa\.ivy2\cache\org.apache.httpcomponents\httpcore\ivy-4.4.13.xml" searched="true" original-local-location="C:\Users\moesa\.ivy2\cache\org.apache.httpcomponents\httpcore\ivy-4.4.13.xml.original" origin-is-local="false" origin-location="https://repo1.maven.org/maven2/org/apache/httpcomponents/httpcore/4.4.13/httpcore-4.4.13.pom"/>
+				<caller organisation="org.apache.httpcomponents" name="httpclient" conf="default, compile, runtime, master" rev="4.4.13" rev-constraint-default="4.4.13" rev-constraint-dynamic="4.4.13" callerrev="4.5.12"/>
+				<artifacts>
+					<artifact name="httpcore" type="jar" ext="jar" status="successful" details="" size="328593" time="441" location="C:\Users\moesa\.ivy2\cache\org.apache.httpcomponents\httpcore\jars\httpcore-4.4.13.jar">
+						<origin-location is-local="false" location="https://repo1.maven.org/maven2/org/apache/httpcomponents/httpcore/4.4.13/httpcore-4.4.13.jar"/>
+					</artifact>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="commons-logging" name="commons-logging">
+			<revision name="1.2" status="release" pubdate="20140705131228" resolver="public" artresolver="public" homepage="http://commons.apache.org/proper/commons-logging/" downloaded="true" searched="true" default="false" conf="compile, runtime(*), master(compile), runtime, compile(*), master" position="8">
+				<license name="The Apache Software License, Version 2.0" url="http://www.apache.org/licenses/LICENSE-2.0.txt"/>
+				<metadata-artifact status="successful" details="" size="19206" time="78" location="C:\Users\moesa\.ivy2\cache\commons-logging\commons-logging\ivy-1.2.xml" searched="true" original-local-location="C:\Users\moesa\.ivy2\cache\commons-logging\commons-logging\ivy-1.2.xml.original" origin-is-local="false" origin-location="https://repo1.maven.org/maven2/commons-logging/commons-logging/1.2/commons-logging-1.2.pom"/>
+				<caller organisation="org.apache.httpcomponents" name="httpclient" conf="default, compile, runtime, master" rev="1.2" rev-constraint-default="1.2" rev-constraint-dynamic="1.2" callerrev="4.5.12"/>
+				<artifacts>
+					<artifact name="commons-logging" type="jar" ext="jar" status="successful" details="" size="61829" time="216" location="C:\Users\moesa\.ivy2\cache\commons-logging\commons-logging\jars\commons-logging-1.2.jar">
+						<origin-location is-local="false" location="https://repo1.maven.org/maven2/commons-logging/commons-logging/1.2/commons-logging-1.2.jar"/>
+					</artifact>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="com.typesafe" name="config">
+			<revision name="1.0.2" status="release" pubdate="20130703080814" resolver="public" artresolver="public" homepage="https://github.com/typesafehub/config" downloaded="true" searched="true" default="false" conf="default, compile, runtime, default(compile), master" position="5">
+				<license name="Apache License, Version 2.0" url="http://www.apache.org/licenses/LICENSE-2.0"/>
+				<metadata-artifact status="successful" details="" size="1856" time="77" location="C:\Users\moesa\.ivy2\cache\com.typesafe\config\ivy-1.0.2.xml" searched="true" original-local-location="C:\Users\moesa\.ivy2\cache\com.typesafe\config\ivy-1.0.2.xml.original" origin-is-local="false" origin-location="https://repo1.maven.org/maven2/com/typesafe/config/1.0.2/config-1.0.2.pom"/>
+				<caller organisation="default" name="maxwell_dausch_project_2.13" conf="compile" rev="1.0.2" rev-constraint-default="1.0.2" rev-constraint-dynamic="1.0.2" callerrev="0.1"/>
+				<artifacts>
+					<artifact name="config" type="bundle" ext="jar" status="successful" details="" size="187497" time="445" location="C:\Users\moesa\.ivy2\cache\com.typesafe\config\bundles\config-1.0.2.jar">
+						<origin-location is-local="false" location="https://repo1.maven.org/maven2/com/typesafe/config/1.0.2/config-1.0.2.jar"/>
+					</artifact>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="ch.qos.logback" name="logback-classic">
+			<revision name="1.2.3" status="release" pubdate="20170331142753" resolver="public" artresolver="public" homepage="" downloaded="true" searched="true" default="false" conf="default, compile, runtime, default(compile), master" position="2">
+				<license name="Eclipse Public License - v 1.0" url="http://www.eclipse.org/legal/epl-v10.html"/>
+				<license name="GNU Lesser General Public License" url="http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html"/>
+				<metadata-artifact status="successful" details="" size="13081" time="115" location="C:\Users\moesa\.ivy2\cache\ch.qos.logback\logback-classic\ivy-1.2.3.xml" searched="true" original-local-location="C:\Users\moesa\.ivy2\cache\ch.qos.logback\logback-classic\ivy-1.2.3.xml.original" origin-is-local="false" origin-location="https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.2.3/logback-classic-1.2.3.pom"/>
+				<caller organisation="default" name="maxwell_dausch_project_2.13" conf="compile" rev="1.2.3" rev-constraint-default="1.2.3" rev-constraint-dynamic="1.2.3" callerrev="0.1"/>
+				<artifacts>
+					<artifact name="logback-classic" type="jar" ext="jar" status="successful" details="" size="290339" time="439" location="C:\Users\moesa\.ivy2\cache\ch.qos.logback\logback-classic\jars\logback-classic-1.2.3.jar">
+						<origin-location is-local="false" location="https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.2.3/logback-classic-1.2.3.jar"/>
+					</artifact>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="org.slf4j" name="slf4j-api">
+			<revision name="1.7.25" status="release" pubdate="20170316113632" resolver="sbt-chain" artresolver="sbt-chain" homepage="http://www.slf4j.org" downloaded="false" searched="false" default="false" conf="default, compile, runtime(*), master(compile), runtime, compile(*), master, default(compile)" position="4">
+				<license name="MIT License" url="http://www.opensource.org/licenses/mit-license.php"/>
+				<metadata-artifact status="no" details="" size="5431" time="0" location="C:\Users\moesa\.ivy2\cache\org.slf4j\slf4j-api\ivy-1.7.25.xml" searched="false" origin-is-local="false" origin-location="https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.7.25/slf4j-api-1.7.25.pom"/>
+				<caller organisation="default" name="maxwell_dausch_project_2.13" conf="compile" rev="1.7.5" rev-constraint-default="1.7.5" rev-constraint-dynamic="1.7.5" callerrev="0.1"/>
+				<caller organisation="ch.qos.logback" name="logback-classic" conf="default, compile, runtime, master" rev="1.7.25" rev-constraint-default="1.7.25" rev-constraint-dynamic="1.7.25" callerrev="1.2.3"/>
+				<caller organisation="org.slf4j" name="slf4j-simple" conf="default, compile, runtime, master" rev="1.7.5" rev-constraint-default="1.7.5" rev-constraint-dynamic="1.7.5" callerrev="1.7.5"/>
+				<artifacts>
+					<artifact name="slf4j-api" type="jar" ext="jar" status="no" details="" size="41203" time="0" location="C:\Users\moesa\.ivy2\cache\org.slf4j\slf4j-api\jars\slf4j-api-1.7.25.jar">
+						<origin-location is-local="false" location="https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.7.25/slf4j-api-1.7.25.jar"/>
+					</artifact>
+				</artifacts>
+			</revision>
+			<revision name="1.7.5" status="release" pubdate="20130325155215" resolver="public" artresolver="public" evicted="latest-revision" evicted-reason="" homepage="http://www.slf4j.org" downloaded="true" searched="true" default="false" conf="default, compile, runtime(*), master(compile), runtime, default(compile), compile(*), master" position="-1">
+				<license name="MIT License" url="http://www.opensource.org/licenses/mit-license.php"/>
+				<metadata-artifact status="successful" details="" size="2689" time="79" location="C:\Users\moesa\.ivy2\cache\org.slf4j\slf4j-api\ivy-1.7.5.xml" searched="true" original-local-location="C:\Users\moesa\.ivy2\cache\org.slf4j\slf4j-api\ivy-1.7.5.xml.original" origin-is-local="false" origin-location="https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.7.5/slf4j-api-1.7.5.pom"/>
+				<evicted-by rev="1.7.25"/>
+				<caller organisation="default" name="maxwell_dausch_project_2.13" conf="compile" rev="1.7.5" rev-constraint-default="1.7.5" rev-constraint-dynamic="1.7.5" callerrev="0.1"/>
+				<caller organisation="org.slf4j" name="slf4j-simple" conf="default, compile, runtime, master" rev="1.7.5" rev-constraint-default="1.7.5" rev-constraint-dynamic="1.7.5" callerrev="1.7.5"/>
+				<artifacts>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="ch.qos.logback" name="logback-core">
+			<revision name="1.2.3" status="release" pubdate="20170331142715" resolver="public" artresolver="public" homepage="" downloaded="true" searched="true" default="false" conf="compile, runtime(*), master(compile), runtime, compile(*), master" position="3">
+				<license name="Eclipse Public License - v 1.0" url="http://www.eclipse.org/legal/epl-v10.html"/>
+				<license name="GNU Lesser General Public License" url="http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html"/>
+				<metadata-artifact status="successful" details="" size="4196" time="77" location="C:\Users\moesa\.ivy2\cache\ch.qos.logback\logback-core\ivy-1.2.3.xml" searched="true" original-local-location="C:\Users\moesa\.ivy2\cache\ch.qos.logback\logback-core\ivy-1.2.3.xml.original" origin-is-local="false" origin-location="https://repo1.maven.org/maven2/ch/qos/logback/logback-core/1.2.3/logback-core-1.2.3.pom"/>
+				<caller organisation="ch.qos.logback" name="logback-classic" conf="default, compile, runtime, master" rev="1.2.3" rev-constraint-default="1.2.3" rev-constraint-dynamic="1.2.3" callerrev="1.2.3"/>
+				<artifacts>
+					<artifact name="logback-core" type="jar" ext="jar" status="successful" details="" size="471901" time="442" location="C:\Users\moesa\.ivy2\cache\ch.qos.logback\logback-core\jars\logback-core-1.2.3.jar">
+						<origin-location is-local="false" location="https://repo1.maven.org/maven2/ch/qos/logback/logback-core/1.2.3/logback-core-1.2.3.jar"/>
+					</artifact>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="org.slf4j" name="slf4j-simple">
+			<revision name="1.7.5" status="release" pubdate="20130325155226" resolver="public" artresolver="public" homepage="http://www.slf4j.org" downloaded="true" searched="true" default="false" conf="default, compile, runtime, default(compile), master" position="1">
+				<license name="MIT License" url="http://www.opensource.org/licenses/mit-license.php"/>
+				<metadata-artifact status="successful" details="" size="1472" time="86" location="C:\Users\moesa\.ivy2\cache\org.slf4j\slf4j-simple\ivy-1.7.5.xml" searched="true" original-local-location="C:\Users\moesa\.ivy2\cache\org.slf4j\slf4j-simple\ivy-1.7.5.xml.original" origin-is-local="false" origin-location="https://repo1.maven.org/maven2/org/slf4j/slf4j-simple/1.7.5/slf4j-simple-1.7.5.pom"/>
+				<caller organisation="default" name="maxwell_dausch_project_2.13" conf="compile" rev="1.7.5" rev-constraint-default="1.7.5" rev-constraint-dynamic="1.7.5" callerrev="0.1"/>
+				<artifacts>
+					<artifact name="slf4j-simple" type="jar" ext="jar" status="successful" details="" size="10680" time="434" location="C:\Users\moesa\.ivy2\cache\org.slf4j\slf4j-simple\jars\slf4j-simple-1.7.5.jar">
+						<origin-location is-local="false" location="https://repo1.maven.org/maven2/org/slf4j/slf4j-simple/1.7.5/slf4j-simple-1.7.5.jar"/>
+					</artifact>
+				</artifacts>
+			</revision>
+		</module>
+		<module organisation="org.scala-lang" name="scala-library">
+			<revision name="2.13.1" status="release" pubdate="20190918035936" resolver="public" artresolver="public" homepage="https://www.scala-lang.org/" extra-info.apiURL="https://www.scala-lang.org/api/2.13.1/" downloaded="false" searched="false" default="false" conf="default, compile, runtime, default(compile), master" position="0">
+				<license name="Apache-2.0" url="https://www.apache.org/licenses/LICENSE-2.0"/>
+				<metadata-artifact status="no" details="" size="2703" time="0" location="C:\Users\moesa\.ivy2\cache\org.scala-lang\scala-library\ivy-2.13.1.xml" searched="false" origin-is-local="false" origin-location="https://repo1.maven.org/maven2/org/scala-lang/scala-library/2.13.1/scala-library-2.13.1.pom"/>
+				<caller organisation="default" name="maxwell_dausch_project_2.13" conf="compile" rev="2.13.1" rev-constraint-default="2.13.1" rev-constraint-dynamic="2.13.1" callerrev="0.1"/>
+				<artifacts>
+					<artifact name="scala-library" type="jar" ext="jar" status="no" details="" size="5721063" time="0" location="C:\Users\moesa\.ivy2\cache\org.scala-lang\scala-library\jars\scala-library-2.13.1.jar">
+						<origin-location is-local="false" location="UNKNOWN"/>
+					</artifact>
+				</artifacts>
+			</revision>
+		</module>
+	</dependencies>
+</ivy-report>
