@@ -1,7 +1,6 @@
 package com.cs474
-import scala.collection.mutable.ListBuffer
 
-case class GQLClient (val connectionURL:String, val headers: ListBuffer[String]) {
+case class GQLClient (val connectionURL:String, val headers: List[(String, String)]) {
   def display: Unit ={
     println("Current connection url: " + connectionURL)
     println("Current header list: " + headers.toList)
@@ -10,7 +9,7 @@ case class GQLClient (val connectionURL:String, val headers: ListBuffer[String])
 
 case class ClientBuilder[ConnectionParameters <: ClientBuilder.ConnectionParameters] (
   connectionURL:String = "", // Required
-  headers: ListBuffer[String] = new ListBuffer[String]()) // Optional
+  headers: List[(String, String)] = List()) // Optional
 {
   import ClientBuilder.ConnectionParameters._
 
@@ -19,8 +18,7 @@ case class ClientBuilder[ConnectionParameters <: ClientBuilder.ConnectionParamet
 
   def setHeader(key: String, value: String): ClientBuilder[ConnectionParameters with Empty] = {
     var newHeaders = headers
-    newHeaders += key
-    newHeaders += value
+    newHeaders = newHeaders:+(key, value)
     this.copy(headers = newHeaders)
   }
 
