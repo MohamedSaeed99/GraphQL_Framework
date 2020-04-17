@@ -1,40 +1,42 @@
 package com.cs474
-
 import scala.collection.mutable.ListBuffer
 
+case class GQLClient (val connectionURL:String, val headers: ListBuffer[String]) {
+  def display: Unit ={
+    println("Current connection url: " + connectionURL)
+    println("Current header list: " + headers.toList)
+  }
+}
+
+case class ClientBuilder[ConnectionParameters <: ClientBuilder.ConnectionParameters] (
+  connectionURL:String = "", // Required
+  headers: ListBuffer[String] = new ListBuffer[String]()) // Optional
+{
+  import ClientBuilder.ConnectionParameters._
+
+  def setConnectionURL(url: String): ClientBuilder[ConnectionParameters with ConnectionURL] =
+    this.copy(connectionURL = url)
+
+  def setHeader(key: String, value: String): ClientBuilder[ConnectionParameters with Empty] = {
+    var newHeaders = headers
+    newHeaders += key
+    newHeaders += value
+    this.copy(headers = newHeaders)
+  }
+
+  def setAuthorization(authType: String, value: String) =
+    this.setHeader("Authorization", authType + " " + value)
+
+  def build(implicit ev: ConnectionParameters =:= RequiredClientParameters): GQLClient = GQLClient(connectionURL, headers)
+}
+
 object ClientBuilder {
-  class GQLClient(connectionURL: String, headers: ListBuffer[String]) {
-    def display: Unit ={
-      println("Current connection url: " + connectionURL)
-      println("Current header list: " + headers.toList)
-    }
+  sealed trait ConnectionParameters
+  object ConnectionParameters {
+    sealed trait Empty extends ConnectionParameters
+    sealed trait ConnectionURL extends ConnectionParameters
+    sealed trait Headers extends ConnectionParameters
+
+    type RequiredClientParameters = Empty with ConnectionURL
   }
-
-  abstract class TRUE
-  abstract class FALSE
-
-  class ClientBuilder
-  [MandatoryConnection]
-  (val connectionURL:String, val headers: ListBuffer[String]) {
-
-    def setConnectionURL(connectionURL: String) =
-      new ClientBuilder[TRUE](connectionURL, headers)
-
-    def setHeader(key: String, value: String) = {
-      var newHeaders = headers
-      newHeaders += key
-      newHeaders += value
-      new ClientBuilder[MandatoryConnection](connectionURL, headers)
-    }
-
-    def setAuthorization(authType: String, value: String) =
-      this.setHeader("Authorization", authType + " " + value)
-  }
-
-  implicit def enableBuild(builder:ClientBuilder[TRUE]) = new {
-    def build() =
-      new GQLClient(builder.connectionURL, builder.headers);
-  }
-
-  def builder = new ClientBuilder[FALSE]("", new ListBuffer[String])
 }
