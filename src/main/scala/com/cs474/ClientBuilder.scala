@@ -42,7 +42,7 @@ case class ClientBuilder[ConnectionParameters <: ClientBuilder.ConnectionParamet
     this.setHeader("Authorization", authType + " " + value)
 
 //  builds a github object
-  def build(implicit ev: ConnectionParameters =:= RequiredClientParameters): GQLClient = GQLClient(connectionURL, headers)
+  def build(implicit ev: ConnectionParameters =:= RequiredClientParameters): GQLClient=GQLClient(connectionURL, headers)
 }
 
 // sealed traits specifies which parameters are required in creating the object
