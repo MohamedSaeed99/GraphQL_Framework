@@ -22,25 +22,6 @@ case class GQLClient (val connectionURL:String, val headers: List[(String, Strin
     httpUriRequest
   }
 
-  def testConnection: Unit = {
-    val client = HttpClientBuilder.create.build
-    val connection = connect
-
-    val temp="{viewer {email login url}}"
-    val gqlReq = new StringEntity("{\"query\":\"" + temp + "\"}" )
-    connection.setEntity(gqlReq)
-
-    val response = client.execute(connection)
-    System.out.println("Response:" + response)
-    response.getEntity match {
-      case null => System.out.println("Response entity is null")
-      case x if x != null => {
-        val respJson = fromInputStream(x.getContent).getLines.mkString
-        System.out.println(respJson)
-      }
-    }
-  }
-
   def flatMap(f: Seq[String]):  Seq[Char] = {
     println("Flat map overriden")
 

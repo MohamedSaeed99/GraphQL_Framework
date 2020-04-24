@@ -64,7 +64,6 @@ case class QueryCommand[QueryParameters <: QueryBuilder.QueryParameters] (
       "pullRequests{ totalPulls: totalCount } " +
       "issues{ totalIssues: totalCount } "+
       "stargazers{ starCount: totalCount } "+
-      "collaborators { totalCount } "+
       "owner { ownerLogin: login ... on Organization{ OrganizationName: name OrganizationDesc: description OrganizationEmail: email } } " +
       "} } } } }\", "+
       "\"variables\":{\"specifics\":\""+specifications+"\", \"branch\":\"master\"}, " +
