@@ -2,7 +2,7 @@ name := "maxwell_dausch_project"
 
 version := "0.1"
 
-scalaVersion := "2.11.11"
+scalaVersion := "2.13.1"
 
 mainClass in (Compile, run) := Some("com.cs474.Main")
 

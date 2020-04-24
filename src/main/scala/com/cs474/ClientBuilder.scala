@@ -8,6 +8,8 @@ import org.apache.http.impl.client.HttpClientBuilder
 import scala.io.Source.fromInputStream
 
 case class GQLClient (val connectionURL:String, val headers: List[(String, String)]) {
+  val client = HttpClientBuilder.create.build
+
   def display: Unit ={
     println("Current connection url: " + connectionURL)
     println("Current header list: " + headers(0)._1)
@@ -51,6 +53,9 @@ case class GQLClient (val connectionURL:String, val headers: List[(String, Strin
     // Return sequence of the returned objects
     f.flatMap(_.toUpperCase)
   }
+
+
+
 
 }
 
