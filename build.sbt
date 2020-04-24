@@ -21,3 +21,7 @@ libraryDependencies += "org.apache.httpcomponents" % "httpclient" % "4.5.12"
 
 // Scala Test
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.8" % "test"
+
+// JSON parsing
+libraryDependencies += "org.json4s" %% "json4s-jackson" % "3.6.7"
+libraryDependencies += "net.liftweb" %% "lift-json" % "3.4.0"

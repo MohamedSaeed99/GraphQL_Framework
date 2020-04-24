@@ -2,6 +2,9 @@ package com.cs474
 
 import org.apache.http.entity.StringEntity
 import org.apache.http.impl.client.HttpClientBuilder
+import org.json4s.JObject
+import org.json4s.JsonAST.JArray
+import org.json4s.jackson.JsonMethods.{parse, pretty, render}
 
 import scala.io.Source.fromInputStream
 
@@ -27,18 +30,10 @@ object Main extends App{
     .setLanguage(List("Java", "JavaScript"))
     .build
 
-  val httpUriRequest = githubObject.connect;
-  println(query.queryString)
-  val gqlReq = new StringEntity( query.queryString )
-  httpUriRequest.setEntity(gqlReq)
+  val response : List[Node] = githubObject.flatMap(query)
 
-  val response = client.execute(httpUriRequest)
-  System.out.println("Response:" + response)
-  response.getEntity match {
-    case null => System.out.println("Response entity is null")
-    case x if x != null => {
-      val respJson = fromInputStream(x.getContent).getLines.mkString
-      System.out.println(respJson)
-    }
+  for (node <- response) {
+    println(node.repoName)
   }
+
 }
