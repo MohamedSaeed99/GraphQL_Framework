@@ -15,6 +15,13 @@ object Main extends App{
     .setAuthorization("Bearer","f6f8623d4f23b15c9b60b328e9f77d49f28274a7")
     .build
 
+
+  // Testing flatmap overriden
+  val myList: Seq[String] = Seq("Testing flat map", "one", "two")
+  val c: Seq[Char] = githubObject.flatMap(myList)
+  println(c)
+
+
   val query = new QueryCommand[QueryBuilder.QueryParameters.Empty]()
     .setRepo("MohamedSaeed99")
     .setLanguage(List("Java", "JavaScript"))

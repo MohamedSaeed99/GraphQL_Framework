@@ -40,6 +40,18 @@ case class GQLClient (val connectionURL:String, val headers: List[(String, Strin
       }
     }
   }
+
+  def flatMap(f: Seq[String]):  Seq[Char] = {
+    println("Flat map overriden")
+
+    // TODO: Take in a built query
+
+    // Execute the query and get a response back
+
+    // Return sequence of the returned objects
+    f.flatMap(_.toUpperCase)
+  }
+
 }
 
 //Builder to build the github object
