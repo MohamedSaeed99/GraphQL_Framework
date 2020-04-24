@@ -13,31 +13,16 @@ import org.json4s.jackson.JsonMethods._
 import scala.io.Source.fromInputStream
 
 
-case class History(
-                    totalCommits: Double
-                  )
-case class ObjectBis(
-                      history: History
-                    )
-case class PrimaryLanguage(
-                            name: String
-                          )
-case class Languages(
-                      totalCount: Double,
-                      nodes: List[PrimaryLanguage]
-                    )
-case class PullRequests(
-                         totalPulls: Double
-                       )
-case class Issues(
-                   totalIssues: Double
-                 )
-case class Stargazers(
-                       starCount: Double
-                     )
-case class Owner(
-                  ownerLogin: String
-                )
+
+// Future idea move parsers for the query builders (RepoQuery will have different variables than UserQuery)
+case class History( totalCommits: Double )
+case class ObjectBis( history: History )
+case class PrimaryLanguage( name: String )
+case class Languages( totalCount: Double,  nodes: List[PrimaryLanguage] )
+case class PullRequests( totalPulls: Double )
+case class Issues( totalIssues: Double )
+case class Stargazers( starCount: Double )
+case class Owner( ownerLogin: String )
 case class Node(
                  repoName: String,
                  repoDesc: String,
@@ -51,30 +36,16 @@ case class Node(
                  collaborators: String,
                  owner: Owner
                )
-case class Edges(
-                  node: Node
-                )
-case class Search(
-                   repositoryCount: Double,
-                   edges: List[Edges]
-                 )
-case class Data(
-                 search: Search
-               )
-case class RepoSearchJsonFormat(
-                           data: Data
-                         )
+case class Edges( node: Node )
+case class Search( repositoryCount: Double,  edges: List[Edges] )
+case class Data( search: Search )
+case class RepoSearchJsonFormat( data: Data )
 
 
 
 
 case class GQLClient (val connectionURL:String, val headers: List[(String, String)]) {
-  val client = HttpClientBuilder.create.build
-
-  def display: Unit ={
-    println("Current connection url: " + connectionURL)
-    println("Current header list: " + headers(0)._1)
-  }
+  private val client = HttpClientBuilder.create.build
 
   // constructs a uri request with the specified headers
   def connect: HttpPost = {
@@ -84,14 +55,6 @@ case class GQLClient (val connectionURL:String, val headers: List[(String, Strin
     }
     httpUriRequest
   }
-
-  def flatMap(f: Seq[String]):  Seq[Char] = {
-    println("Flat map overriden")
-
-    // TODO: Take in a built query
-    f.flatMap(_.toUpperCase)
-  }
-
 
   def flatMap(query: Query):  List[Node] = {
     println("Flat map overriden Query")

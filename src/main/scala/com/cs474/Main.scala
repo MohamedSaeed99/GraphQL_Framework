@@ -19,12 +19,6 @@ object Main extends App{
     .build
 
 
-  // Testing flatmap overriden
-  val myList: Seq[String] = Seq("Testing flat map", "one", "two")
-  val c: Seq[Char] = githubObject.flatMap(myList)
-  println(c)
-
-
   val query = new QueryCommand[QueryBuilder.QueryParameters.Empty]()
     .setRepo("MohamedSaeed99")
     .setLanguage(List("Java", "JavaScript"))
