@@ -5,7 +5,68 @@ import org.apache.http.client.methods.HttpPost
 // Object that is used to connect to the GitHub Api
 import org.apache.http.entity.StringEntity
 import org.apache.http.impl.client.HttpClientBuilder
+
+import org.json4s._
+import org.json4s.jackson.JsonMethods._
+
+
 import scala.io.Source.fromInputStream
+
+
+case class History(
+                    totalCommits: Double
+                  )
+case class ObjectBis(
+                      history: History
+                    )
+case class PrimaryLanguage(
+                            name: String
+                          )
+case class Languages(
+                      totalCount: Double,
+                      nodes: List[PrimaryLanguage]
+                    )
+case class PullRequests(
+                         totalPulls: Double
+                       )
+case class Issues(
+                   totalIssues: Double
+                 )
+case class Stargazers(
+                       starCount: Double
+                     )
+case class Owner(
+                  ownerLogin: String
+                )
+case class Node(
+                 repoName: String,
+                 repoDesc: String,
+                 repoURL: String,
+                 `object`: ObjectBis,
+                 primaryLanguage: PrimaryLanguage,
+                 languages: Languages,
+                 pullRequests: PullRequests,
+                 issues: Issues,
+                 stargazers: Stargazers,
+                 collaborators: String,
+                 owner: Owner
+               )
+case class Edges(
+                  node: Node
+                )
+case class Search(
+                   repositoryCount: Double,
+                   edges: List[Edges]
+                 )
+case class Data(
+                 search: Search
+               )
+case class RepoSearchJsonFormat(
+                           data: Data
+                         )
+
+
+
 
 case class GQLClient (val connectionURL:String, val headers: List[(String, String)]) {
   val client = HttpClientBuilder.create.build
@@ -47,16 +108,43 @@ case class GQLClient (val connectionURL:String, val headers: List[(String, Strin
     println("Flat map overriden")
 
     // TODO: Take in a built query
-
-    // Execute the query and get a response back
-
-    // Return sequence of the returned objects
     f.flatMap(_.toUpperCase)
   }
 
 
+  def flatMap(query: Query):  List[Node] = {
+    println("Flat map overriden Query")
+
+    // Execute the query and get a response back
+    val request = this.connect;
+    val requestQuery = new StringEntity(query.queryString)
+    request.setEntity(requestQuery)
+
+    val response = client.execute(request)
+
+    System.out.println("Response:" + response)
+    response.getEntity match {
+      case null => {
+        System.out.println("Response entity is null")
+        // parse("{}").asInstanceOf[JObject]
+        List[Node]()
+      }
+      case x if x != null => {
+        val respJson = fromInputStream(x.getContent).getLines.mkString
+        // var parsed = parse(respJson).asInstanceOf[JObject]
+        // parse(respJson).asInstanceOf[JObject]
 
 
+        implicit val formats = DefaultFormats
+        // println(pretty(render(parsed)))
+
+        val res = parse(respJson).extract[RepoSearchJsonFormat]
+        println(res.data.search.edges)
+
+        res.data.search.edges.map(_.node)
+      }
+    }
+  }
 }
 
 //Builder to build the github object
