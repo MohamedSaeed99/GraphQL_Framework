@@ -1,16 +1,18 @@
 package com.cs474
 
-case class RepoQuery( user:String, language:List[String]=List(), query:String=""){
+case class RepoQuery( query: String) extends Query(query){
+  override def queryString: String = query
+}
 
-
+case class RepoQueryBuilder( user:String, language:List[String]=List(), query:String=""){
   // Stores the language variables in query builder creates a new copy of this object with the modified query builder
-  def setLanguage(languages: List[String]): RepoQuery = {
+  def setLanguage(languages: List[String]): RepoQueryBuilder = {
     val newVariables = languages
     this.copy(language=newVariables)
   }
 
   def build(): Query = {
-    var specifications:String = ""
+    var specifications:String = "user:"+user+" "
 
     // concatenates the specifications together
     for (q <- language){
@@ -41,6 +43,6 @@ case class RepoQuery( user:String, language:List[String]=List(), query:String=""
       "\"variables\":{\"specifics\":\""+specifications+"\", \"branch\":\"master\"}, " +
       "\"operationName\":\"listRepos\"}"
     // returns an object with the built query command
-    Query(newQuery)
+    RepoQuery(newQuery)
   }
 }

@@ -1,5 +1,6 @@
 package com.cs474
 
+import org.apache.http.HttpResponse
 import org.apache.http.client.methods.HttpPost
 
 // Object that is used to connect to the GitHub Api
@@ -33,7 +34,6 @@ case class Node(
                  pullRequests: PullRequests,
                  issues: Issues,
                  stargazers: Stargazers,
-                 collaborators: String,
                  owner: Owner
                )
 case class Edges( node: Node )
@@ -55,8 +55,7 @@ case class GQLClient (val connectionURL:String, val headers: List[(String, Strin
     }
     httpUriRequest
   }
-
-  def flatMap(query: Query):  List[Node] = {
+  def execute[A <: Query, B](query: A): List[B] = {
     println("Flat map overriden Query")
 
     // Execute the query and get a response back
@@ -66,28 +65,25 @@ case class GQLClient (val connectionURL:String, val headers: List[(String, Strin
 
     val response = client.execute(request)
 
-    System.out.println("Response:" + response)
     response.getEntity match {
       case null => {
         System.out.println("Response entity is null")
-        // parse("{}").asInstanceOf[JObject]
-        List[Node]()
+        List[B]()
       }
       case x if x != null => {
         val respJson = fromInputStream(x.getContent).getLines.mkString
-        // var parsed = parse(respJson).asInstanceOf[JObject]
-        // parse(respJson).asInstanceOf[JObject]
-
 
         implicit val formats = DefaultFormats
-        // println(pretty(render(parsed)))
 
-        val res = parse(respJson).extract[RepoSearchJsonFormat]
-        println(res.data.search.edges)
+        val res = parse(respJson).extract[B]
 
         res.data.search.edges.map(_.node)
       }
     }
+  }
+
+  def flatMap(query: Query): List[Node] = {
+
   }
 }
 

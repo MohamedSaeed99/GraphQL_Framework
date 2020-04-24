@@ -1,6 +1,6 @@
 package com.cs474
 
-case class IssueQuery(){
+case class IssueQueryBuilder(){
 
 
 

@@ -53,9 +53,13 @@ query {
   }
 }
  */
-case class UserQuery(user:String, pagination:Int=20, query:String=""){
 
-  def setPagination(value:Int): UserQuery={
+case class UserQuery(query:String) extends Query(query){
+  override def queryString: String = query
+}
+case class UserQueryBuilder(user:String, pagination:Int=20, query:String=""){
+
+  def setPagination(value:Int): UserQueryBuilder={
     val newPage = value
     this.copy(pagination=newPage)
   }
@@ -75,14 +79,14 @@ case class UserQuery(user:String, pagination:Int=20, query:String=""){
             "url "+
             "followers { followers: totalCount } "+
             "following { following: totalCount } "+
-            "organizations(first:$pagination) { edges { node{ name } } } "+
-            "watching(first:$pagination) { edges { node{ name } } } "+
-            "repositories(first:20) { edges { node { name url } } } "+
-            "repositoriesContributedTo(first:20) { edges { node { name url } } } "+
+            "organizations(first:$pagination) { edges { node { name } } } "+
+            "watching(first:$pagination) { edges { node { name } } } "+
+            "repositories(first:$pagination) { edges { node { name url } } } "+
+            "repositoriesContributedTo(first:$pagination) { edges { node { name url } } } "+
       "} } } } }\", "+
       "\"variables\":{\"specifics\":\"user:"+user+"\", \"pagination\":"+pagination+"}, " +
       "\"operationName\":\"listUser\"}"
     // returns an object with the built query command
-    Query(newQuery)
+    UserQuery(newQuery)
   }
 }

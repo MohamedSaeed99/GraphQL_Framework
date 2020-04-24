@@ -1,12 +1,7 @@
 package com.cs474
 
-case class Query (val query:String) {
-  def display: Unit ={
-    println("Current query: " + query)
-  }
-  def queryString: String = {
-    query
-  }
+abstract class Query (query:String) {
+  def queryString: String
 }
 
 //Builder to build the github object
@@ -28,18 +23,18 @@ case class QueryCommand[QueryParameters <: QueryBuilder.QueryParameters] (
 //    this.copy(queryStringBuilder=newVariables)
 //  }
 
-  def setRepo(name:String=""): RepoQuery={
-    val repoQuery:RepoQuery = new RepoQuery(name)
+  def setRepo(name:String=""): RepoQueryBuilder={
+    val repoQuery:RepoQueryBuilder = new RepoQueryBuilder(name)
     repoQuery
   }
 
-  def setUser(name: String): UserQuery={
-    val userQuery:UserQuery = new UserQuery(name)
+  def setUser(name: String): UserQueryBuilder={
+    val userQuery:UserQueryBuilder = new UserQueryBuilder(name)
     userQuery
   }
 
-  def setIssue(): IssueQuery={
-    val issueQuery:IssueQuery = new IssueQuery()
+  def setIssue(): IssueQueryBuilder={
+    val issueQuery:IssueQueryBuilder = new IssueQueryBuilder()
     issueQuery
   }
 
