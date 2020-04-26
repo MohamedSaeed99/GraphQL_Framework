@@ -1,5 +1,33 @@
 package com.cs474
 
+
+case class History( totalCommits: Double )
+case class ObjectBis( history: History )
+case class PrimaryLanguage( name: String )
+case class Languages( totalCount: Double,  nodes: List[PrimaryLanguage] )
+case class PullRequests( totalPulls: Double )
+case class Issues( totalIssues: Double )
+case class Stargazers( starCount: Double )
+case class Owner( ownerLogin: String )
+case class RepoNode(
+                 repoName: String,
+                 repoDesc: String,
+                 repoURL: String,
+                 `object`: ObjectBis,
+                 primaryLanguage: PrimaryLanguage,
+                 languages: Languages,
+                 pullRequests: PullRequests,
+                 issues: Issues,
+                 stargazers: Stargazers,
+                 owner: Owner
+               )
+case class RepoEdges( node: RepoNode )
+case class RepoSearch( repositoryCount: Double,  edges: List[RepoEdges] )
+case class RepoData( search: RepoSearch )
+case class RepoSearchJsonFormat( data: RepoData )
+
+
+
 case class RepoQuery( query: String) extends Query(query){
   override def queryString: String = query
 }
@@ -11,7 +39,7 @@ case class RepoQueryBuilder( user:String, language:List[String]=List(), query:St
     this.copy(language=newVariables)
   }
 
-  def build(): Query = {
+  def build(): RepoQuery = {
     var specifications:String = "user:"+user+" "
 
     // concatenates the specifications together

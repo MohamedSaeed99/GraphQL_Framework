@@ -33,8 +33,8 @@ case class QueryCommand[QueryParameters <: QueryBuilder.QueryParameters] (
     userQuery
   }
 
-  def setIssue(): IssueQueryBuilder={
-    val issueQuery:IssueQueryBuilder = new IssueQueryBuilder()
+  def setIssue(searchWord: String): IssueQueryBuilder={
+    val issueQuery:IssueQueryBuilder = new IssueQueryBuilder("in:title " + searchWord)
     issueQuery
   }
 
