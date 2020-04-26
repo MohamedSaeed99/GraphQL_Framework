@@ -1,4 +1,4 @@
-package com.cs474
+package com.cs474.Query
 
 // User Search Response JSON
 case class Followers(followers: Double)

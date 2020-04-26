@@ -1,4 +1,4 @@
-package com.cs474
+package com.cs474.Query
 
 abstract class Query (query:String) {
   def queryString: String

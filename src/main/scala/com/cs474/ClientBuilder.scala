@@ -1,5 +1,6 @@
 package com.cs474
 
+import com.cs474.Query._
 import org.apache.http.HttpResponse
 import org.apache.http.client.methods.HttpPost
 
@@ -12,12 +13,6 @@ import org.json4s.jackson.JsonMethods._
 
 
 import scala.io.Source.fromInputStream
-
-
-
-// Future idea move parsers for the query builders (RepoQuery will have different variables than UserQuery)
-
-
 
 
 case class GQLClient (val connectionURL:String, val headers: List[(String, String)]) {
@@ -60,15 +55,12 @@ case class GQLClient (val connectionURL:String, val headers: List[(String, Strin
 //  }
 
 
-  def execute[A](query: Query): JsonInput = {
+  private def execute[A](query: Query): JsonInput = {
     val client = HttpClientBuilder.create.build
-
-    println("Flat map overriden Query")
 
     // Execute the query and get a response back
     val request = this.connect;
     val requestQuery = new StringEntity(query.queryString)
-    println(query.queryString)
     request.setEntity(requestQuery)
 
     val response = client.execute(request)
@@ -78,10 +70,7 @@ case class GQLClient (val connectionURL:String, val headers: List[(String, Strin
         return null
       }
       case x if x != null => {
-        println("HERE")
-        val c = fromInputStream(x.getContent).getLines.mkString
-        println(c)
-        c
+        fromInputStream(x.getContent).getLines.mkString
       }
     }
   }

@@ -1,5 +1,4 @@
-package com.cs474
-
+package com.cs474.Query
 
 case class History( totalCommits: Double )
 case class ObjectBis( history: History )

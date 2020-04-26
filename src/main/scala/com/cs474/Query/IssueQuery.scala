@@ -1,4 +1,4 @@
-package com.cs474
+package com.cs474.Query
 
 case class Author(
                    url: String,

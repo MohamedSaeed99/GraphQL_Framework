@@ -7,6 +7,7 @@ import org.json4s.JsonAST.JArray
 import org.json4s.jackson.JsonMethods.{parse, pretty, render}
 
 import scala.io.Source.fromInputStream
+import Query._
 
 object Main extends App{
   val githubObject = new ClientBuilder[ClientBuilder.ConnectionParameters.Empty]()
@@ -26,24 +27,4 @@ object Main extends App{
   val i = new QueryCommand[QueryBuilder.QueryParameters.Empty]().setIssue("Test").build
   val ir : List[IssueNode] = githubObject.executeQuery(i)
   println(ir)
-
-//
-//
-//  val u = new QueryCommand[QueryBuilder.QueryParameters.Empty]().setUser("MDausch").build
-//  val ur : List[UserNode] = githubObject.executeQuery(u)
-//  println(ur)
-//
-//  val u1 = new QueryCommand[QueryBuilder.QueryParameters.Empty]().setUser("MDausch").build
-//  val ur1 : List[UserNode] = githubObject.executeQuery(u1)
-//  println(ur1)
-//
-//  val u2 = new QueryCommand[QueryBuilder.QueryParameters.Empty]().setUser("MDausch").build
-//  val ur2 : List[UserNode] = githubObject.executeQuery(u2)
-//  println(ur2)
-//
-//  val u3 = new QueryCommand[QueryBuilder.QueryParameters.Empty]().setUser("MDausch").build
-//  val ur3 : List[UserNode] = githubObject.executeQuery(u3)
-//  println(ur3)
-
-
 }
