@@ -21,7 +21,6 @@ import scala.io.Source.fromInputStream
 
 
 case class GQLClient (val connectionURL:String, val headers: List[(String, String)]) {
-  private val client = HttpClientBuilder.create.build
 
   // constructs a uri request with the specified headers
   def connect: HttpPost = {
@@ -62,6 +61,8 @@ case class GQLClient (val connectionURL:String, val headers: List[(String, Strin
 
 
   def execute[A](query: Query): JsonInput = {
+    val client = HttpClientBuilder.create.build
+
     println("Flat map overriden Query")
 
     // Execute the query and get a response back
