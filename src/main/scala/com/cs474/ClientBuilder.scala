@@ -1,5 +1,6 @@
 package com.cs474
 
+import com.cs474.Query._
 import org.apache.http.HttpResponse
 import org.apache.http.client.methods.HttpPost
 
@@ -11,38 +12,7 @@ import org.json4s._
 import org.json4s.jackson.JsonMethods._
 import scala.io.Source.fromInputStream
 
-trait ReturnTypes
-trait JSONFormat
-
-// Future idea move parsers for the query builders (RepoQuery will have different variables than UserQuery)
-case class History( totalCommits: Double )
-case class ObjectBis( history: History )
-case class PrimaryLanguage( name: String )
-case class Languages( totalCount: Double,  nodes: List[PrimaryLanguage] )
-case class PullRequests( totalPulls: Double )
-case class Issues( totalIssues: Double )
-case class Stargazers( starCount: Double )
-case class Owner( ownerLogin: String )
-case class RepoNode(
-                 repoName: String,
-                 repoDesc: String,
-                 repoURL: String,
-                 `object`: ObjectBis,
-                 primaryLanguage: PrimaryLanguage,
-                 languages: Languages,
-                 pullRequests: PullRequests,
-                 issues: Issues,
-                 stargazers: Stargazers,
-                 owner: Owner
-               ) extends ReturnTypes
-case class Edges( node: RepoNode )
-case class Search( repositoryCount: Double,  edges: List[Edges] )
-case class Data( search: Search )
-case class RepoSearchJsonFormat( data: Data ) extends JSONFormat
-
-case class GQLClient (connectionURL:String, headers: List[(String, String)]) {
-
-  private val client = HttpClientBuilder.create.build
+case class GQLClient (val connectionURL:String, val headers: List[(String, String)]) {
 
   // constructs a uri request with the specified headers
   def connect: HttpPost = {
@@ -53,33 +23,42 @@ case class GQLClient (connectionURL:String, headers: List[(String, String)]) {
     httpUriRequest
   }
 
-  def execute[A<:Query, B<:JSONFormat](query:A, format:B): List[ReturnTypes] = {
-    println("HERE")
+  private def execute[A](query: Query): JsonInput = {
+    val client = HttpClientBuilder.create.build
     // Execute the query and get a response back
     val request = this.connect;
     val requestQuery = new StringEntity(query.queryString)
     request.setEntity(requestQuery)
 
     val response = client.execute(request)
-    (response.getEntity, format) match {
+    response.getEntity match {
       case null => {
-        println("Response is empty")
-        List[RepoNode]()
+        return null
       }
-      case (first, second) if first != null && second.isInstanceOf[RepoSearchJsonFormat] => {
-        val respJson = fromInputStream(first.getContent).getLines.mkString
-
-        implicit val formats = DefaultFormats
-
-        val res = parse(respJson).extract[RepoSearchJsonFormat]
-
-        res.data.search.edges.map(_.node)
+      case x if x != null => {
+        fromInputStream(x.getContent).getLines.mkString
       }
     }
   }
+  def executeQuery(q: RepoQuery): List[RepoNode] = {
+    val jsonRes = this.execute(q)
+    implicit val formats = DefaultFormats
+    val res = parse(jsonRes).extract[RepoSearchJsonFormat]
+    res.data.search.edges.map(_.node)
+  }
 
-  def flatMap(query: RepoQuery): Unit = {
-    this.execute[RepoQuery, RepoSearchJsonFormat](query, RepoSearchJsonFormat(null))
+  def executeQuery(q: UserQuery): List[UserNode] = {
+    val jsonRes = this.execute(q)
+    implicit val formats = DefaultFormats
+    val res = parse(jsonRes).extract[UserSearchJSONFormat]
+    res.data.search.edges.map(_.node)
+  }
+
+  def executeQuery(q: IssueQuery): List[IssueNode] = {
+    val jsonRes = this.execute(q)
+    implicit val formats = DefaultFormats
+    val res = parse(jsonRes).extract[IssueSearchJSONFormat]
+    res.data.search.edges.map(_.node)
   }
 }
 
