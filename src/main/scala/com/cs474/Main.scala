@@ -15,7 +15,7 @@ object Main extends App{
     .setAuthorization("Bearer","f6f8623d4f23b15c9b60b328e9f77d49f28274a7")
     .build
 
-  val response : List[Node] = githubObject.flatMap(new QueryCommand[QueryBuilder.QueryParameters.Empty]().setUser("MohamedSaeed99").build)
+  val response = githubObject.flatMap(new QueryCommand[QueryBuilder.QueryParameters.Empty]().setRepo("MohamedSaeed99").build)
 
   println(response)
 }

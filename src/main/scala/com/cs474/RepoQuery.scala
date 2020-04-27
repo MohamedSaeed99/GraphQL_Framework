@@ -11,8 +11,11 @@ case class RepoQueryBuilder( user:String, language:List[String]=List(), query:St
     this.copy(language=newVariables)
   }
 
-  def build(): Query = {
-    var specifications:String = "user:"+user+" "
+  def build(): RepoQuery = {
+    var specifications: String = ""
+    if(user != null) {
+      specifications= "user:" + user + " "
+    }
 
     // concatenates the specifications together
     for (q <- language){

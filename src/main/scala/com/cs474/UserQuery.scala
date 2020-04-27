@@ -66,7 +66,7 @@ case class UserQueryBuilder(user:String, pagination:Int=20, query:String=""){
 
 
   // builds a github object
-  def build(): Query = {
+  def build(): UserQuery = {
     // builds the query
     var newQuery = query
     newQuery = "{\"query\":\"" + "query listUser($specifics:String!, $pagination:Int!) {"+

@@ -9,11 +9,10 @@ import org.apache.http.impl.client.HttpClientBuilder
 
 import org.json4s._
 import org.json4s.jackson.JsonMethods._
-
-
 import scala.io.Source.fromInputStream
 
-
+trait ReturnTypes
+trait JSONFormat
 
 // Future idea move parsers for the query builders (RepoQuery will have different variables than UserQuery)
 case class History( totalCommits: Double )
@@ -24,7 +23,7 @@ case class PullRequests( totalPulls: Double )
 case class Issues( totalIssues: Double )
 case class Stargazers( starCount: Double )
 case class Owner( ownerLogin: String )
-case class Node(
+case class RepoNode(
                  repoName: String,
                  repoDesc: String,
                  repoURL: String,
@@ -35,16 +34,14 @@ case class Node(
                  issues: Issues,
                  stargazers: Stargazers,
                  owner: Owner
-               )
-case class Edges( node: Node )
+               ) extends ReturnTypes
+case class Edges( node: RepoNode )
 case class Search( repositoryCount: Double,  edges: List[Edges] )
 case class Data( search: Search )
-case class RepoSearchJsonFormat( data: Data )
+case class RepoSearchJsonFormat( data: Data ) extends JSONFormat
 
+case class GQLClient (connectionURL:String, headers: List[(String, String)]) {
 
-
-
-case class GQLClient (val connectionURL:String, val headers: List[(String, String)]) {
   private val client = HttpClientBuilder.create.build
 
   // constructs a uri request with the specified headers
@@ -55,35 +52,34 @@ case class GQLClient (val connectionURL:String, val headers: List[(String, Strin
     }
     httpUriRequest
   }
-  def execute[A <: Query, B](query: A): List[B] = {
-    println("Flat map overriden Query")
 
+  def execute[A<:Query, B<:JSONFormat](query:A, format:B): List[ReturnTypes] = {
+    println("HERE")
     // Execute the query and get a response back
     val request = this.connect;
     val requestQuery = new StringEntity(query.queryString)
     request.setEntity(requestQuery)
 
     val response = client.execute(request)
-
-    response.getEntity match {
+    (response.getEntity, format) match {
       case null => {
-        System.out.println("Response entity is null")
-        List[B]()
+        println("Response is empty")
+        List[RepoNode]()
       }
-      case x if x != null => {
-        val respJson = fromInputStream(x.getContent).getLines.mkString
+      case (first, second) if first != null && second.isInstanceOf[RepoSearchJsonFormat] => {
+        val respJson = fromInputStream(first.getContent).getLines.mkString
 
         implicit val formats = DefaultFormats
 
-        val res = parse(respJson).extract[B]
+        val res = parse(respJson).extract[RepoSearchJsonFormat]
 
         res.data.search.edges.map(_.node)
       }
     }
   }
 
-  def flatMap(query: Query): List[Node] = {
-
+  def flatMap(query: RepoQuery): Unit = {
+    this.execute[RepoQuery, RepoSearchJsonFormat](query, RepoSearchJsonFormat(null))
   }
 }
 
