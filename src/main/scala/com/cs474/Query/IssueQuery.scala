@@ -1,5 +1,6 @@
 package com.cs474.Query
 
+//parsing of the ISSUE type response
 case class Author(
                    url: String,
                    login: String
@@ -26,11 +27,21 @@ case class IssueData(search: IssueSearch)
 case class IssueSearchJSONFormat(data: IssueData)
 
 
+// Filter status for the ISSUE type response
+case class Status(n: IssueNode)(f: (String)=>Boolean){
+  def compare(): Boolean={
+    f(n.state)
+  }
+}
+
+// Contains built query string
 case class IssueQuery(query:String) extends Query(query){
   override def queryString: String = query
 }
-case class IssueQueryBuilder(searchWord:String, pagination:Int=20, query:String=""){
 
+//IssueQuery builder that would build a type ISSUE search query
+case class IssueQueryBuilder(searchWord:String, pagination:Int=100, query:String=""){
+//  Sets the number of issues that can be visible at once
   def setPagination(value:Int): IssueQueryBuilder={
     val newPage = value
     this.copy(pagination=newPage)

@@ -12,7 +12,9 @@ import org.json4s._
 import org.json4s.jackson.JsonMethods._
 import scala.io.Source.fromInputStream
 
+//Connection to the Github API
 case class GQLClient (val connectionURL:String, val headers: List[(String, String)]) {
+  private val client = HttpClientBuilder.create.build
 
   // constructs a uri request with the specified headers
   def connect: HttpPost = {
@@ -23,30 +25,37 @@ case class GQLClient (val connectionURL:String, val headers: List[(String, Strin
     httpUriRequest
   }
 
+//  Sends the request and retrieves response
   private def execute[A](query: Query): JsonInput = {
-    val client = HttpClientBuilder.create.build
     // Execute the query and get a response back
     val request = this.connect;
     val requestQuery = new StringEntity(query.queryString)
     request.setEntity(requestQuery)
 
+//    sends the request
     val response = client.execute(request)
+
+//    returns an input stream if it returns something
     response.getEntity match {
       case null => {
-        return null
+        null
       }
       case x if x != null => {
         fromInputStream(x.getContent).getLines.mkString
       }
     }
   }
+
+//  Executes a REPOSITORY type query
   def executeQuery(q: RepoQuery): List[RepoNode] = {
     val jsonRes = this.execute(q)
+    println(jsonRes)
     implicit val formats = DefaultFormats
     val res = parse(jsonRes).extract[RepoSearchJsonFormat]
     res.data.search.edges.map(_.node)
   }
 
+// Executes a USER type query
   def executeQuery(q: UserQuery): List[UserNode] = {
     val jsonRes = this.execute(q)
     implicit val formats = DefaultFormats
@@ -54,6 +63,7 @@ case class GQLClient (val connectionURL:String, val headers: List[(String, Strin
     res.data.search.edges.map(_.node)
   }
 
+//  Executes a ISSUE type query
   def executeQuery(q: IssueQuery): List[IssueNode] = {
     val jsonRes = this.execute(q)
     implicit val formats = DefaultFormats
