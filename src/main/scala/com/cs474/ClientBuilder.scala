@@ -170,8 +170,6 @@ case class GQLClient (val connectionURL:String, val headers: List[(String, Strin
 
     // Rebuild the query but with the last cursor set
     val jsonRes = this.execute(q.builder.setCursor(cursor).build())
-    println(jsonRes)
-
     implicit val formats = DefaultFormats
     val res = parse(jsonRes).extract[IssueSearchJSONFormat]
     val ret = res.data.search.edges
@@ -184,8 +182,6 @@ case class GQLClient (val connectionURL:String, val headers: List[(String, Strin
   def executeQuery(q: IssueQuery): List[IssueNode] = {
     println("Fetching Initial Issue Data")
     val jsonRes = this.execute(q)
-    println(jsonRes)
-
     implicit val formats = DefaultFormats
     val res = parse(jsonRes).extract[IssueSearchJSONFormat]
     val nonPaginatedData = paginateIssueRequest(q, res.data.search.edges, res.data.search.issueCount)
