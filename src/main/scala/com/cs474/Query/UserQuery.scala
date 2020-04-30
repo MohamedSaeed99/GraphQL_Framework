@@ -7,35 +7,41 @@ case class NameURLNode(name: String)
 case class GitDataEdges(node: NameURLNode)
 case class UserGitData(edges: List[GitDataEdges])
 case class UserNode(
-                 username: String,
-                 email: String,
-                 url: String,
-                 followers: Followers,
-                 following: Following,
-                 organizations: UserGitData,
-                 watching: UserGitData,
-                 repositories: UserGitData,
-                 repositoriesContributedTo: UserGitData
+                 username: Option[String],
+                 email: Option[String],
+                 url: Option[String],
+                 followers: Option[Followers],
+                 following: Option[Following],
+                 organizations: Option[UserGitData],
+                 watching: Option[UserGitData],
+                 repositories: Option[UserGitData],
+                 repositoriesContributedTo: Option[UserGitData]
                )
-case class UserSearchEdges(node: UserNode)
+case class UserSearchEdges(node: UserNode, cursor: String)
 case class UserSearchJSON(
-                   edges: List[UserSearchEdges]
+                           userCount: Double,
+                           edges: List[UserSearchEdges]
                  )
 case class UserDataJSON(search: UserSearchJSON)
 case class UserSearchJSONFormat(data: UserDataJSON)
 
+
 // Contains built query string
-case class UserQuery(query:String) extends Query(query){
+case class UserQuery(query:String, builder: UserQueryBuilder) extends Query(query){
   override def queryString: String = query
 }
 
 //UserQuery builder that would build a type USER search query
-case class UserQueryBuilder(user:String, pagination:Int=100, query:String=""){
+case class UserQueryBuilder(user:String, pagination:Int=100, cursor:String=null, query:String=""){
 
-//  Sets the number of repos that can be visible at once
+  //  Sets the number of repos that can be visible at once
   def setPagination(value:Int): UserQueryBuilder={
     val newPage = value
     this.copy(pagination=newPage)
+  }
+
+  def setCursor(c: String): UserQueryBuilder = {
+    this.copy(cursor= "\"" + c + "\"")
   }
 
   // builds a github object
@@ -43,8 +49,9 @@ case class UserQueryBuilder(user:String, pagination:Int=100, query:String=""){
 
     // builds the query
     var newQuery = query
-    newQuery = "{\"query\":\"" + "query listUser($specifics:String!, $pagination:Int!) {"+
-      "search(query:$specifics, type: USER, first:$pagination) { " +
+    newQuery = "{\"query\":\"" + "query listUser($specifics:String!, $pagination:Int!, $cursor:String) {"+
+      "search(query:$specifics, type: USER, first:$pagination, after:$cursor) { " +
+      "userCount "+
       "edges { "+
         "node { "+
           "... on User { "+
@@ -57,11 +64,13 @@ case class UserQueryBuilder(user:String, pagination:Int=100, query:String=""){
             "watching(first:$pagination) { edges { node { name url } } } "+
             "repositories(first:$pagination) { edges { node { name url } } } "+
             "repositoriesContributedTo(first:$pagination) { edges { node { name url } } } "+
-      "} } } } }\", "+
-      "\"variables\":{\"specifics\":\"user:"+user+"\", \"pagination\":"+pagination+"}, " +
-      "\"operationName\":\"listUser\"}"
-
+          "}" +
+        "}" +
+        "cursor" +
+    "} } }\", "+
+    "\"variables\":{\"specifics\":\"user:"+user+"\", \"pagination\":"+pagination+", \"cursor\":" + cursor + "}, " +
+    "\"operationName\":\"listUser\"}"
     // returns an object with the built query command
-    UserQuery(newQuery)
+    UserQuery(newQuery, this.copy())
   }
 }

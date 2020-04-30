@@ -1,12 +1,5 @@
 package com.cs474
 
-import org.apache.http.entity.StringEntity
-import org.apache.http.impl.client.HttpClientBuilder
-import org.json4s.JObject
-import org.json4s.JsonAST.JArray
-import org.json4s.jackson.JsonMethods.{parse, pretty, render}
-
-import scala.io.Source.fromInputStream
 import Query._
 
 object Main extends App{
@@ -20,7 +13,7 @@ object Main extends App{
   val response : List[RepoNode] = (githubObject.executeQuery(q))
   println(response)
   for(n <- response){
-    println(n.stargazers.starCount)
+    println(n.stargazers.get.starCount)
   }
   println("HERE")
 
