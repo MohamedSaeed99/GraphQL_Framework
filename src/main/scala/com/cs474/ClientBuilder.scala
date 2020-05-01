@@ -12,8 +12,7 @@ import org.json4s.jackson.JsonMethods._
 import scala.io.Source.fromInputStream
 
 //Connection to the Github API
-case class GQLClient (val connectionURL:String, val headers: List[(String, String)]) {
-  private val client = HttpClientBuilder.create.build
+case class GQLClient (connectionURL:String, headers: List[(String, String)]) {
 
   // constructs a uri request with the specified headers
   def connect: HttpPost = {
@@ -24,38 +23,11 @@ case class GQLClient (val connectionURL:String, val headers: List[(String, Strin
     httpUriRequest
   }
 
-
-//  def execute[A <: Query, B](query: A): List[B] = {
-//    println("Flat map overriden Query")
-//
-//    // Execute the query and get a response back
-//    val request = this.connect;
-//    val requestQuery = new StringEntity(query.queryString)
-//    request.setEntity(requestQuery)
-//
-//    val response = client.execute(request)
-//
-//    response.getEntity match {
-//      case null => {
-//        System.out.println("Response entity is null")
-//        List[B]()
-//      }
-//      case x if x != null => {
-//        val respJson = fromInputStream(x.getContent).getLines.mkString
-//
-//        implicit val formats = DefaultFormats
-//
-//        val res = parse(respJson).extract[B]
-//
-//        res.data.search.edges.map(_.node)
-//      }
-//    }
-//  }
-
   //  Sends the request and retrieves response
   private def execute[A](query: Query): JsonInput = {
     // Execute the query and get a response back
-    val request = this.connect;
+    val client = HttpClientBuilder.create.build
+    val request = this.connect
     val requestQuery = new StringEntity(query.queryString)
     request.setEntity(requestQuery)
 
@@ -64,16 +36,15 @@ case class GQLClient (val connectionURL:String, val headers: List[(String, Strin
 
 //    returns an input stream if it returns something
     response.getEntity match {
-      case null => {
+      case null =>
         null
-      }
-      case x if x != null => {
+      case x if x != null =>
         fromInputStream(x.getContent).getLines.mkString
-      }
     }
   }
 
-  private def paginateRepoRequest(q: RepoQuery, nodes: List[RepoEdges], requestCount: Int ): List[RepoEdges] = {
+  //  Retrieves more data from github api by pagination
+  private def paginateRequest[A <: Query](q: A, nodes: List[Edge], requestCount: Int ): List[Edge] = {
     println("Fetching Repo Data: " + nodes.length + " / " + requestCount)
 
     // If we've got all of the data, or a good chunk of it return the data
@@ -91,102 +62,25 @@ case class GQLClient (val connectionURL:String, val headers: List[(String, Strin
     val cursor = nodes.last.cursor
 
     // Rebuild the query but with the last cursor set
-    val jsonRes = this.execute(q.builder.setCursor(cursor).build())
+    val jsonRes = this.execute(q.builder.setCursor(cursor).build)
     println(jsonRes)
     implicit val formats = DefaultFormats
-    val res = parse(jsonRes).extract[RepoSearchJsonFormat]
+    val res = parse(jsonRes).extract[JSONFormat]
     val ret = res.data.search.edges
 
     // Get the rest of the data
-    return paginateRepoRequest(q, nodes:::ret, requestCount)
+    paginateRequest(q, nodes:::ret, requestCount)
   }
 
-  //  Executes a REPOSITORY type query
-  def executeQuery(q: RepoQuery): List[RepoNode] = {
-    println("Fetching Initial Repo Data")
-    val jsonRes = this.execute(q)
-    implicit val formats = DefaultFormats
-    val res = parse(jsonRes).extract[RepoSearchJsonFormat]
-    val nonPaginatedData = paginateRepoRequest(q, res.data.search.edges, res.data.search.repositoryCount)
-
-    return nonPaginatedData.map(_.node)
-  }
-
-  private def paginateUserRequest(q: UserQuery, nodes: List[UserSearchEdges], requestCount: Double ): List[UserSearchEdges] = {
-    println("Fetching User Data: " + nodes.length + " / " + requestCount)
-
-    // If we've got all of the data, or a good chunk of it return the data
-    if(nodes.length >= requestCount){
-      return nodes
-    } else if(nodes.length >= 500) {
-      println("Stopping early at 500 results")
-      return nodes
-    }
-
-    // Sleep for a bit before making the next request
-    Thread.sleep(2000)
-
-    // Otherwise get the cursor of the last node
-    val cursor = nodes.last.cursor
-
-    // Rebuild the query but with the last cursor set
-    val jsonRes = this.execute(q.builder.setCursor(cursor).build())
-    implicit val formats = DefaultFormats
-    val res = parse(jsonRes).extract[UserSearchJSONFormat]
-    val ret = res.data.search.edges
-
-    // Get the rest of the data
-    return paginateUserRequest(q, nodes:::ret, requestCount)
-  }
-
-  // Executes a USER type query
-  def executeQuery(q: UserQuery): List[UserNode] = {
+  // Executes a query
+  def executeQuery[A<: Query](q: A): List[Node] = {
     println("Fetching Initial User Data")
     val jsonRes = this.execute(q)
     implicit val formats = DefaultFormats
-    val res = parse(jsonRes).extract[UserSearchJSONFormat]
-    val nonPaginatedData = paginateUserRequest(q, res.data.search.edges, res.data.search.userCount)
+    val res = parse(jsonRes).extract[JSONFormat]
+    val nonPaginatedData = paginateRequest(q, res.data.search.edges, res.data.search.count)
 
-    return nonPaginatedData.map(_.node)
-  }
-
-
-  private def paginateIssueRequest(q: IssueQuery, nodes: List[IssueSearchEdges], requestCount: Int ): List[IssueSearchEdges] = {
-    println("Fetching Issue Data: " + nodes.length + " / " + requestCount)
-
-    // If we've got all of the data, or a good chunk of it return the data
-    if(nodes.length >= requestCount){
-      return nodes
-    } else if(nodes.length >= 500) {
-      println("Stopping early at 500 results")
-      return nodes
-    }
-
-    // Sleep for a bit before making the next request
-    Thread.sleep(2000)
-
-    // Otherwise get the cursor of the last node
-    val cursor = nodes.last.cursor
-
-    // Rebuild the query but with the last cursor set
-    val jsonRes = this.execute(q.builder.setCursor(cursor).build())
-    implicit val formats = DefaultFormats
-    val res = parse(jsonRes).extract[IssueSearchJSONFormat]
-    val ret = res.data.search.edges
-
-    // Get the rest of the data
-    return paginateIssueRequest(q, nodes:::ret, requestCount)
-  }
-
-  //  Executes a ISSUE type query
-  def executeQuery(q: IssueQuery): List[IssueNode] = {
-    println("Fetching Initial Issue Data")
-    val jsonRes = this.execute(q)
-    implicit val formats = DefaultFormats
-    val res = parse(jsonRes).extract[IssueSearchJSONFormat]
-    val nonPaginatedData = paginateIssueRequest(q, res.data.search.edges, res.data.search.issueCount)
-
-    return nonPaginatedData.map(_.node)
+    nonPaginatedData.map(_.node)
   }
 }
 

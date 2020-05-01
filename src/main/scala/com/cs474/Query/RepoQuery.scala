@@ -1,45 +1,20 @@
 package com.cs474.Query
 
-//parsing of the REPOSITORY type response
-case class History( totalCommits: Option[Int] )
-case class ObjectBis( history: Option[History] )
-case class PrimaryLanguage( name: Option[String] )
-case class Languages( totalCount: Double,  nodes: List[PrimaryLanguage] )
-case class PullRequests( totalPulls: Option[Double] )
-case class Issues( totalIssues: Option[Double] )
-case class Stargazers( starCount: Double )
-case class Owner( ownerLogin: Option[String] )
-case class RepoNode(
-                 repoName: Option[String],
-                 repoDesc: Option[String],
-                 repoURL: Option[String],
-                 `object`: Option[ObjectBis],
-                 primaryLanguage: Option[PrimaryLanguage],
-                 languages: Option[Languages],
-                 pullRequests: Option[PullRequests],
-                 issues: Option[Issues],
-                 stargazers: Option[Stargazers],
-                 owner: Option[Owner]
-               )
-case class RepoEdges( node: RepoNode, cursor: String )
-case class RepoSearch( repositoryCount: Int,  edges: List[RepoEdges] )
-case class RepoData( search: RepoSearch )
-case class RepoSearchJsonFormat( data: RepoData )
-
 // Filter specific for the REPOSITORY type response
-case class Stars(n:RepoNode)(f: (Double) => Boolean) {
+case class Stars(n:Node)(f: (Double) => Boolean) {
   def compare(): Boolean={
     f(n.stargazers.get.starCount)
   }
 }
 
 // Contains built query string
-case class RepoQuery( query: String, builder: RepoQueryBuilder) extends Query(query){
+case class RepoQuery(query: String, queryBuilder: RepoQueryBuilder) extends Query(query){
   override def queryString: String = query
+  override def builder: RepoQueryBuilder = queryBuilder
 }
 
 //RepoQuery builder that would build a type REPOSITORY search query
-case class RepoQueryBuilder( user:String=null, stars:String=null, language:List[String]=List(),cursor:String=null, query:String=""){
+case class RepoQueryBuilder( user:String=null, stars:String=null, language:List[String]=List(),cursor:String=null, query:String="") extends QueryBuilder{
   // Stores the language variables in query builder creates a new copy of this object with the modified query builder
   def setLanguage(languages: List[String]): RepoQueryBuilder = {
     val newVariables = languages
@@ -88,13 +63,13 @@ case class RepoQueryBuilder( user:String=null, stars:String=null, language:List[
     // builds the query
     var newQuery = "{\"query\":\"" + "query listRepos($specifics:String!, $branch:String!, $cursor:String){"+
       "search(query:$specifics, type: REPOSITORY, first:100, after:$cursor){ " +
-      "repositoryCount "+
+      "count: repositoryCount "+
       "edges { "+
       "node { "+
       "... on Repository { "+
       "repoName: name "+
       "repoDesc: description "+
-      "repoURL: url "+
+      "url "+
       "object(expression:$branch) { ... on Commit { history { totalCommits: totalCount } } } "+
       "primaryLanguage { name } " +
       "languages(first:20){ totalCount nodes{ name } } " +

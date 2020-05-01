@@ -1,45 +1,46 @@
 package com.cs474.Query
 
 //parsing of the ISSUE type response
-case class Author(
-                   url: String,
-                   login: String
-                 )
-case class Node(
-                 name: String,
-                 login: String,
-                 url: String
-               )
-case class Edges(node: Node)
-case class Assignees(edges: List[Edges])
-case class IssueNode(
-                      title: Option[String],
-                      url: Option[String],
-                      body: Option[String],
-                      locked: Option[Boolean],
-                      state: Option[String],
-                      author: Option[Author],
-                    )
-case class IssueSearchEdges(node: IssueNode, cursor: String)
-case class IssueSearch(issueCount: Int, edges: List[IssueSearchEdges])
-case class IssueData(search: IssueSearch)
-case class IssueSearchJSONFormat(data: IssueData)
+//case class Author(
+//                   url: String,
+//                   login: String
+//                 )
+//case class Node(
+//                 name: String,
+//                 login: String,
+//                 url: String
+//               )
+//case class Edges(node: Node)
+//case class Assignees(edges: List[Edges])
+//case class IssueNode(
+//                      title: Option[String],
+//                      url: Option[String],
+//                      body: Option[String],
+//                      locked: Option[Boolean],
+//                      state: Option[String],
+//                      author: Option[Author],
+//                    )
+//case class IssueSearchEdges(node: IssueNode, cursor: String)
+//case class IssueSearch(issueCount: Int, edges: List[IssueSearchEdges])
+//case class IssueData(search: IssueSearch)
+//case class IssueSearchJSONFormat(data: IssueData)
 
 
 // Filter status for the ISSUE type response
-case class Status(n: IssueNode)(f: (String)=>Boolean){
+case class Status(n: Node)(f: (String)=>Boolean){
   def compare(): Boolean={
     f(n.state.get)
   }
 }
 
 // Contains built query string
-case class IssueQuery(query:String, builder: IssueQueryBuilder) extends Query(query){
+case class IssueQuery(query:String, queryBuilder: IssueQueryBuilder) extends Query(query){
   override def queryString: String = query
+  override def builder: IssueQueryBuilder = queryBuilder
 }
 
 // IssueQuery builder that would build a type ISSUE search query
-case class IssueQueryBuilder(searchWord:String, pagination:Int=100,cursor:String=null, query:String=""){
+case class IssueQueryBuilder(searchWord:String, pagination:Int=100,cursor:String=null, query:String="") extends QueryBuilder{
 
   // Sets the number of issues that can be visible at once
   def setPagination(value:Int): IssueQueryBuilder={
@@ -58,7 +59,7 @@ case class IssueQueryBuilder(searchWord:String, pagination:Int=100,cursor:String
     var newQuery = query
     newQuery = "{\"query\":\"" + "query listIssues($specifics:String!, $pagination:Int!,$cursor:String) {"+
         "search(query:$specifics type: ISSUE first:$pagination, after:$cursor) { " +
-          "issueCount " +
+          "count: issueCount " +
           "edges { "+
             "node { "+
               "... on Issue { "+
