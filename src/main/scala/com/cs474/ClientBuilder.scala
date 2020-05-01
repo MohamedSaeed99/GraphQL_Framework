@@ -44,7 +44,7 @@ case class GQLClient (connectionURL:String, headers: List[(String, String)]) {
   }
 
   //  Retrieves more data from github api by pagination
-  private def paginateRequest[A <: Query](q: A, nodes: List[Edge], requestCount: Int ): List[Edge] = {
+  private def paginateRequest[A <: Query](q: A, nodes: List[Edges], requestCount: Int ): List[Edges] = {
     println("Fetching Repo Data: " + nodes.length + " / " + requestCount)
 
     // If we've got all of the data, or a good chunk of it return the data
@@ -78,9 +78,14 @@ case class GQLClient (connectionURL:String, headers: List[(String, String)]) {
     val jsonRes = this.execute(q)
     implicit val formats = DefaultFormats
     val res = parse(jsonRes).extract[JSONFormat]
-    val nonPaginatedData = paginateRequest(q, res.data.search.edges, res.data.search.count)
-
-    nonPaginatedData.map(_.node)
+    if(res.data != null) {
+      val nonPaginatedData = paginateRequest(q, res.data.search.edges, res.data.search.count)
+      nonPaginatedData.map(_.node)
+    }
+    else{
+      println("TIMED OUT")
+      List[Node]()
+    }
   }
 }
 

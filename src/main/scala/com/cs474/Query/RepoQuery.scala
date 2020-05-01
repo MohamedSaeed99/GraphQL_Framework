@@ -1,11 +1,33 @@
 package com.cs474.Query
 
 // Filter specific for the REPOSITORY type response
-case class Stars(n:Node)(f: (Double) => Boolean) {
+case class Commits(n:Node)(f: Double => Boolean) {
   def compare(): Boolean={
-    f(n.stargazers.get.starCount)
+    if(n.`object`.isEmpty) false
+    else f(n.`object`.get.history.get.totalCommits.get)
   }
 }
+
+case class Issue(n:Node)(f: Double => Boolean) {
+  def compare(): Boolean={
+    if(n.issues.isEmpty) false
+    else f(n.issues.get.totalIssues.get)
+  }
+}
+
+case class PullRequest(n:Node)(f: Double => Boolean) {
+  def compare(): Boolean={
+    if(n.pullRequests.isEmpty) false
+    else f(n.pullRequests.get.totalPulls.get)
+  }
+}
+case class Language(n:Node)(f: Double => Boolean) {
+  def compare(): Boolean={
+    if(n.languages.isEmpty) false
+    else f(n.languages.get.totalCount)
+  }
+}
+
 
 // Contains built query string
 case class RepoQuery(query: String, queryBuilder: RepoQueryBuilder) extends Query(query){
@@ -43,7 +65,7 @@ case class RepoQueryBuilder( user:String=null, stars:String=null, language:List[
     this.copy(cursor= "\"" + c + "\"")
   }
 
-  def build(): RepoQuery = {
+  def build: RepoQuery = {
     var specifications: String = "is:public "
     if(user != null) {
       specifications += "user:"+user+" "
@@ -72,7 +94,7 @@ case class RepoQueryBuilder( user:String=null, stars:String=null, language:List[
       "url "+
       "object(expression:$branch) { ... on Commit { history { totalCommits: totalCount } } } "+
       "primaryLanguage { name } " +
-      "languages(first:20){ totalCount nodes{ name } } " +
+      "languages(first:5){ totalCount nodes{ name } } " +
       "pullRequests{ totalPulls: totalCount } " +
       "issues{ totalIssues: totalCount } "+
       "stargazers{ starCount: totalCount } "+

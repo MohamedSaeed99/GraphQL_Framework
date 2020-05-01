@@ -49,15 +49,14 @@ case class Node(
                      email: Option[String],
                      followers: Option[Followers],
                      following: Option[Following],
-                     organizations: Option[UserGitData],
-                     watching: Option[UserGitData],
                      repositories: Option[UserGitData],
-                     repositoriesContributedTo: Option[UserGitData]
                    )
-case class Edge( node: Node, cursor: String )
-case class Search( count: Int,  edges: List[Edge] )
+case class Edges( node: Node, cursor: String )
+case class Search( count: Int,  edges: List[Edges] )
 case class Data( search: Search )
 case class JSONFormat( data: Data )
+
+case class ERRORForamt(data: String)
 
 //Abstract class for the different types of queries being built
 abstract class Query (query:String) {
@@ -81,8 +80,8 @@ class QueryCommand ()
   }
 
 //  Sets the type of search query to a USER type
-  def setUserQuery(name: String): UserQueryBuilder={
-    val userQuery:UserQueryBuilder = UserQueryBuilder(name)
+  def setUserQuery(): UserQueryBuilder={
+    val userQuery:UserQueryBuilder = UserQueryBuilder()
     userQuery
   }
 

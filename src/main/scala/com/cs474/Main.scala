@@ -13,18 +13,18 @@ object Main extends App{
 //  val response : List[Node] = (githubObject.executeQuery(q))
 //  println(response)
 
-  val q = (new QueryCommand()).setRepoQuery().setUser("MDausch").build
-  val response : List[Node] = (githubObject.executeQuery(q)).filter(Stars(_)(_>10).compare())
+  val q = (new QueryCommand()).setRepoQuery().build
+  val response : List[Node] = (githubObject.executeQuery(q)).filter(Commits(_)(_<10).compare()).filter(Issue(_)(_<20).compare())
   println(response)
 
-
-  val u1 = (new QueryCommand()).setUserQuery("MDausch").build
-  val ur1 : List[Node] = githubObject.executeQuery(u1)
-  println(ur1)
-
-  val i = (new QueryCommand()).setIssueQuery("test").build
-  val ir : List[Node] = githubObject.executeQuery(i)
-  println(ir)
+//
+//  val u1 = ((new QueryCommand()).setUserQuery().build)
+//  val ur1 : List[Node] = githubObject.executeQuery(u1).filter(FollowingFilter(_)(_<100).compare())
+//  println(ur1)
+//
+//  val i = (new QueryCommand()).setIssueQuery("test").build
+//  val ir : List[Node] = githubObject.executeQuery(i)
+//  println(ir)
 
 //  !_.locked gets all the unlocked repos
 //  _.locked gets all the locked repos

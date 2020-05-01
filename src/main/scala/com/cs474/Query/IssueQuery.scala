@@ -27,9 +27,10 @@ package com.cs474.Query
 
 
 // Filter status for the ISSUE type response
-case class Status(n: Node)(f: (String)=>Boolean){
+case class Status(n: Node)(f: String=>Boolean){
   def compare(): Boolean={
-    f(n.state.get)
+    if(n.state.isEmpty) false
+    else f(n.state.get)
   }
 }
 
@@ -54,7 +55,7 @@ case class IssueQueryBuilder(searchWord:String, pagination:Int=100,cursor:String
   }
 
   // builds a github object
-  def build(): IssueQuery = {
+  def build: IssueQuery = {
     // builds the query
     var newQuery = query
     newQuery = "{\"query\":\"" + "query listIssues($specifics:String!, $pagination:Int!,$cursor:String) {"+

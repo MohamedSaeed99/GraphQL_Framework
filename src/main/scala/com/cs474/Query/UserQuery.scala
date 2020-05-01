@@ -26,6 +26,15 @@ package com.cs474.Query
 //case class UserSearchJSONFormat(data: UserDataJSON)
 
 
+// Filter specific for the REPOSITORY type response
+case class FollowingFilter(n: Node)(f: Double => Boolean) {
+  def compare(): Boolean={
+    if(n.following.isEmpty) false
+    else f(n.following.get.following)
+  }
+}
+
+
 // Contains built query string
 case class UserQuery(query:String, queryBuilder: UserQueryBuilder) extends Query(query){
   override def queryString: String = query
@@ -33,7 +42,8 @@ case class UserQuery(query:String, queryBuilder: UserQueryBuilder) extends Query
 }
 
 //UserQuery builder that would build a type USER search query
-case class UserQueryBuilder(user:String, pagination:Int=100, cursor:String=null, query:String="") extends QueryBuilder{
+case class UserQueryBuilder(specs: List[(String, String)] = List(),
+                            pagination:Int=100, cursor:String=null, query:String="") extends QueryBuilder{
 
   //  Sets the number of repos that can be visible at once
   def setPagination(value:Int): UserQueryBuilder={
@@ -45,8 +55,49 @@ case class UserQueryBuilder(user:String, pagination:Int=100, cursor:String=null,
     this.copy(cursor= "\"" + c + "\"")
   }
 
+  def setFollowers(follow:String): UserQueryBuilder = {
+    var newSpec = specs
+    newSpec = newSpec:+("followers:", follow)
+    this.copy(specs=newSpec)
+  }
+
+  def setUser(username:String): UserQueryBuilder = {
+    var newSpec = specs
+    newSpec = newSpec:+("user:", username)
+    this.copy(specs = newSpec)
+  }
+
+  def setLocation(loc: String): UserQueryBuilder = {
+    var newSpec = specs
+    newSpec = newSpec:+("location:", loc)
+    this.copy(specs = newSpec)
+  }
+
+  def setNumRepos(total: String): UserQueryBuilder = {
+    var newSpec = specs
+    newSpec = newSpec:+("repos:", total)
+    this.copy(specs = newSpec)
+  }
+
+  def setLanguage(lang: String): UserQueryBuilder = {
+    var newSpec = specs
+    newSpec = newSpec:+("language:", lang)
+    this.copy(specs = newSpec)
+  }
+
   // builds a github object
-  def build(): UserQuery = {
+  def build: UserQuery = {
+
+    var specifications = ""
+    for (spec <- specs){
+      specifications += spec._1 + spec._2 + " "
+    }
+
+    if(specifications.isEmpty){
+      specifications = "repos:>1 "
+    }
+
+    println(specifications)
 
     // builds the query
     var newQuery = query
@@ -61,15 +112,12 @@ case class UserQueryBuilder(user:String, pagination:Int=100, cursor:String=null,
             "url "+
             "followers { followers: totalCount } "+
             "following { following: totalCount } "+
-            "organizations(first:$pagination) { edges { node { name url } } } "+
-            "watching(first:$pagination) { edges { node { name url } } } "+
-            "repositories(first:$pagination) { edges { node { name url } } } "+
-            "repositoriesContributedTo(first:$pagination) { edges { node { name url } } } "+
+            "repositories(first:5) { edges { node { name url } } } "+
           "}" +
         "}" +
         "cursor" +
     "} } }\", "+
-    "\"variables\":{\"specifics\":\"user:"+user+"\", \"pagination\":"+pagination+", \"cursor\":" + cursor + "}, " +
+    "\"variables\":{\"specifics\":\"" + specifications + "\", \"pagination\":"+pagination+", \"cursor\":" + cursor + "}, " +
     "\"operationName\":\"listUser\"}"
     // returns an object with the built query command
     UserQuery(newQuery, this.copy())
