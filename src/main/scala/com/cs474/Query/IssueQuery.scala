@@ -41,14 +41,7 @@ case class IssueQuery(query:String, queryBuilder: IssueQueryBuilder) extends Que
 }
 
 // IssueQuery builder that would build a type ISSUE search query
-case class IssueQueryBuilder(searchWord:String, pagination:Int=100,cursor:String=null, query:String="") extends QueryBuilder{
-
-  // Sets the number of issues that can be visible at once
-  def setPagination(value:Int): IssueQueryBuilder={
-    val newPage = value
-    this.copy(pagination=newPage)
-  }
-
+case class IssueQueryBuilder(searchWord:String,cursor:String=null, query:String="") extends QueryBuilder{
 
   def setCursor(c: String): IssueQueryBuilder = {
     this.copy(cursor= "\"" + c + "\"")
@@ -58,8 +51,8 @@ case class IssueQueryBuilder(searchWord:String, pagination:Int=100,cursor:String
   def build: IssueQuery = {
     // builds the query
     var newQuery = query
-    newQuery = "{\"query\":\"" + "query listIssues($specifics:String!, $pagination:Int!,$cursor:String) {"+
-        "search(query:$specifics type: ISSUE first:$pagination, after:$cursor) { " +
+    newQuery = "{\"query\":\"" + "query listIssues($specifics:String!, $cursor:String) {"+
+        "search(query:$specifics type: ISSUE first:50, after:$cursor) { " +
           "count: issueCount " +
           "edges { "+
             "node { "+
@@ -74,7 +67,7 @@ case class IssueQueryBuilder(searchWord:String, pagination:Int=100,cursor:String
       "}" +
       "cursor" +
     "} } }\", "+
-    "\"variables\":{\"specifics\":\""+searchWord+"\", \"pagination\":"+pagination+", \"cursor\":" + cursor + "}, " +
+    "\"variables\":{\"specifics\":\""+searchWord+"\", \"cursor\":" + cursor + "}, " +
     "\"operationName\":\"listIssues\"}"
 
     // returns an object with the built query command

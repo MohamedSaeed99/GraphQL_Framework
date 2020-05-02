@@ -43,42 +43,41 @@ case class UserQuery(query:String, queryBuilder: UserQueryBuilder) extends Query
 
 //UserQuery builder that would build a type USER search query
 case class UserQueryBuilder(specs: List[(String, String)] = List(),
-                            pagination:Int=100, cursor:String=null, query:String="") extends QueryBuilder{
-
-  //  Sets the number of repos that can be visible at once
-  def setPagination(value:Int): UserQueryBuilder={
-    val newPage = value
-    this.copy(pagination=newPage)
-  }
+                            cursor:String=null, query:String="") extends QueryBuilder{
 
   def setCursor(c: String): UserQueryBuilder = {
     this.copy(cursor= "\"" + c + "\"")
   }
 
+  // sets the specifications for Followers
   def setFollowers(follow:String): UserQueryBuilder = {
     var newSpec = specs
     newSpec = newSpec:+("followers:", follow)
     this.copy(specs=newSpec)
   }
 
+  // sets specifications for a specific user
   def setUser(username:String): UserQueryBuilder = {
     var newSpec = specs
     newSpec = newSpec:+("user:", username)
     this.copy(specs = newSpec)
   }
 
+  // sets specifications for a location
   def setLocation(loc: String): UserQueryBuilder = {
     var newSpec = specs
     newSpec = newSpec:+("location:", loc)
     this.copy(specs = newSpec)
   }
 
+  // sets specifications for number of repos
   def setNumRepos(total: String): UserQueryBuilder = {
     var newSpec = specs
     newSpec = newSpec:+("repos:", total)
     this.copy(specs = newSpec)
   }
 
+ // sets specifications for a language
   def setLanguage(lang: String): UserQueryBuilder = {
     var newSpec = specs
     newSpec = newSpec:+("language:", lang)
@@ -102,7 +101,7 @@ case class UserQueryBuilder(specs: List[(String, String)] = List(),
     // builds the query
     var newQuery = query
     newQuery = "{\"query\":\"" + "query listUser($specifics:String!, $pagination:Int!, $cursor:String) {"+
-      "search(query:$specifics, type: USER, first:$pagination, after:$cursor) { " +
+      "search(query:$specifics, type: USER, first:50, after:$cursor) { " +
       "count: userCount "+
       "edges { "+
         "node { "+
@@ -117,7 +116,7 @@ case class UserQueryBuilder(specs: List[(String, String)] = List(),
         "}" +
         "cursor" +
     "} } }\", "+
-    "\"variables\":{\"specifics\":\"" + specifications + "\", \"pagination\":"+pagination+", \"cursor\":" + cursor + "}, " +
+    "\"variables\":{\"specifics\":\"" + specifications + "\", \"cursor\":" + cursor + "}, " +
     "\"operationName\":\"listUser\"}"
     // returns an object with the built query command
     UserQuery(newQuery, this.copy())

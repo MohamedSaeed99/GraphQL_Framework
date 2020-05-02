@@ -49,14 +49,21 @@ case class Node(
                      email: Option[String],
                      followers: Option[Followers],
                      following: Option[Following],
-                     repositories: Option[UserGitData],
-                   )
+                     repositories: Option[UserGitData]
+                   ){
+
+  //  goes extracts the data from each node
+  def extract[A<:InformationExtraction] (l: List[A]): Node={
+    for(dataInfo <- l){
+      println(dataInfo.extractData(this).get)
+    }
+    this
+  }
+}
 case class Edges( node: Node, cursor: String )
 case class Search( count: Int,  edges: List[Edges] )
 case class Data( search: Search )
 case class JSONFormat( data: Data )
-
-case class ERRORForamt(data: String)
 
 //Abstract class for the different types of queries being built
 abstract class Query (query:String) {

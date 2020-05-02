@@ -73,7 +73,7 @@ case class GQLClient (connectionURL:String, headers: List[(String, String)]) {
   }
 
   // Executes a query
-  def executeQuery[A<: Query](q: A): List[Node] = {
+  def executeQuery[A <: Query](q: A): List[Node] = {
     println("Fetching Initial User Data")
     val jsonRes = this.execute(q)
     implicit val formats = DefaultFormats

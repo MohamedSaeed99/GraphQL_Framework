@@ -84,7 +84,7 @@ case class RepoQueryBuilder( user:String=null, stars:String=null, language:List[
 
     // builds the query
     var newQuery = "{\"query\":\"" + "query listRepos($specifics:String!, $branch:String!, $cursor:String){"+
-      "search(query:$specifics, type: REPOSITORY, first:100, after:$cursor){ " +
+      "search(query:$specifics, type: REPOSITORY, first:50, after:$cursor){ " +
       "count: repositoryCount "+
       "edges { "+
       "node { "+
