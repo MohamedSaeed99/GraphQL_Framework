@@ -50,7 +50,7 @@ case class GQLClient (connectionURL:String, headers: List[(String, String)]) {
     // If we've got all of the data, or a good chunk of it return the data
     if(nodes.length >= requestCount){
       return nodes
-    } else if(nodes.length >= 500) {
+    } else if(nodes.length >= 100) {
       println("Stopping early at 500 results")
       return nodes
     }

@@ -55,7 +55,11 @@ case class Node(
   //  goes extracts the data from each node
   def extract[A<:InformationExtraction] (l: List[A]): Node={
     for(dataInfo <- l){
-      println(dataInfo.extractData(this).get)
+      val str: Option[String] = dataInfo.extractData(this)
+      if(str.isEmpty){println(str)}
+      else{
+        println(str.get)
+      }
     }
     this
   }
