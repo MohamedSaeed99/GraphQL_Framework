@@ -14,7 +14,9 @@ object Main extends App{
 //  println(response)
 
   val q = new QueryCommand().setRepoQuery().build
-  val response : List[Node] = (githubObject.executeQuery(q)).filter(Commits(_)(_<10).compare()).filter(Issue(_)(_<20).compare()).map(_.extract(List(GetIssues(), GetLanguages())))
+  val response : List[Node] = (githubObject.executeQuery(q))
+    .filter(Commits(_)(_<10).compare())
+    .map(_.extract(List(GetCommitCount(), GetIssues(), GetLanguages(), GetPrimaryLanguage(), GetBody())))
 
 //
 //  val u1 = ((new QueryCommand()).setUserQuery().build)

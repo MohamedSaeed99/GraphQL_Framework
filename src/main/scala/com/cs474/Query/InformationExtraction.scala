@@ -16,7 +16,7 @@ case class GetUrl() extends InformationExtraction {
   override def extractData(n:Node): Option[String] = if(n.url.isEmpty) None else Some("Url: " + n.url.get)
 }
 case class GetCommitCount() extends InformationExtraction {
-  override def extractData(n:Node): Option[String] = if(n.`object`.isEmpty) None else Some("Repository Name: " + n.`object`.get.history.get.totalCommits.get.toString)
+  override def extractData(n:Node): Option[String] = if(n.`object`.isEmpty) None else Some("Commit Total: " + n.`object`.get.history.get.totalCommits.get.toString)
 }
 case class GetPrimaryLanguage() extends InformationExtraction{
   override def extractData(n: Node): Option[String] = if(n.primaryLanguage.isEmpty) None else Some("Primary Language: "+ n.primaryLanguage.get.name.get)

@@ -1,29 +1,49 @@
 package com.cs474.Query
 
+import org.slf4j.LoggerFactory
+
 // Filter specific for the REPOSITORY type response
 case class Commits(n:Node)(f: Double => Boolean) {
   def compare(): Boolean={
-    if(n.`object`.isEmpty) false
+    val Logger = LoggerFactory.getLogger( classOf[Commits])
+
+    if(n.`object`.isEmpty) {
+      Logger.info("Commit attribute is empty")
+      false
+    }
     else f(n.`object`.get.history.get.totalCommits.get)
   }
 }
 
 case class Issue(n:Node)(f: Double => Boolean) {
+  val Logger = LoggerFactory.getLogger( classOf[Issue])
   def compare(): Boolean={
-    if(n.issues.isEmpty) false
+    if(n.issues.isEmpty) {
+      Logger.info("Issues attribute is empty")
+      false
+    }
     else f(n.issues.get.totalIssues.get)
   }
 }
 
 case class PullRequest(n:Node)(f: Double => Boolean) {
+  val Logger = LoggerFactory.getLogger( classOf[PullRequest])
+
   def compare(): Boolean={
-    if(n.pullRequests.isEmpty) false
+    if(n.pullRequests.isEmpty) {
+      Logger.info("Pullrequest attribute is empty")
+      false
+    }
     else f(n.pullRequests.get.totalPulls.get)
   }
 }
-case class Language(n:Node)(f: Double => Boolean) {
+case class LanguageFilter(n:Node)(f: Double => Boolean) {
+  val Logger = LoggerFactory.getLogger( classOf[LanguageFilter])
   def compare(): Boolean={
-    if(n.languages.isEmpty) false
+    if(n.languages.isEmpty) {
+      Logger.info("Language attribute is empty")
+      false
+    }
     else f(n.languages.get.totalCount)
   }
 }
@@ -36,9 +56,14 @@ case class RepoQuery(query: String, queryBuilder: RepoQueryBuilder) extends Quer
 }
 
 //RepoQuery builder that would build a type REPOSITORY search query
-case class RepoQueryBuilder( user:String=null, stars:String=null, language:List[String]=List(),cursor:String=null, query:String="") extends QueryBuilder{
+case class RepoQueryBuilder( user:String=null, stars:String=null,
+                             language:List[String]=List(),cursor:String=null, query:String="") extends QueryBuilder{
+
+  val Logger = LoggerFactory.getLogger( classOf[RepoQueryBuilder])
+
   // Stores the language variables in query builder creates a new copy of this object with the modified query builder
   def setLanguage(languages: List[String]): RepoQueryBuilder = {
+    Logger.info("Setting up specifications for languages: {}", languages)
     val newVariables = languages
     this.copy(language=newVariables)
   }
@@ -50,12 +75,14 @@ case class RepoQueryBuilder( user:String=null, stars:String=null, language:List[
   //  "<=n" : returns repose with less than or equal to n stars
   //  "a..n" : returns repos with stars in between a and n inclusive
   def setStars(starCount: String): RepoQueryBuilder ={
+    Logger.info("Setting up specifications for number of stars: {}", starCount)
     val newStarVar = starCount
     this.copy(stars=newStarVar)
   }
 
   // sets condition to retrieve a specific username
   def setUser(username: String): RepoQueryBuilder ={
+    Logger.info("Getting a specific user: {}", username)
     val newUsername = username
     this.copy(user=newUsername)
   }
@@ -81,6 +108,8 @@ case class RepoQueryBuilder( user:String=null, stars:String=null, language:List[
       specifications += q
       specifications += " "
     }
+
+    Logger.info("Building a Repo query with these specifications => {}", specifications)
 
     // builds the query
     var newQuery = "{\"query\":\"" + "query listRepos($specifics:String!, $branch:String!, $cursor:String){"+

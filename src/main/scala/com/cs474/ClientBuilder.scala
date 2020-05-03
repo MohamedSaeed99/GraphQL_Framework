@@ -2,8 +2,7 @@ package com.cs474
 
 import com.cs474.Query._
 import org.apache.http.client.methods.HttpPost
-
-// Object that is used to connect to the GitHub Api
+import org.slf4j.LoggerFactory;
 import org.apache.http.entity.StringEntity
 import org.apache.http.impl.client.HttpClientBuilder
 
@@ -13,6 +12,7 @@ import scala.io.Source.fromInputStream
 
 //Connection to the Github API
 case class GQLClient (connectionURL:String, headers: List[(String, String)]) {
+  val Logger = LoggerFactory.getLogger( classOf[GQLClient])
 
   // constructs a uri request with the specified headers
   def connect: HttpPost = {
@@ -28,30 +28,35 @@ case class GQLClient (connectionURL:String, headers: List[(String, String)]) {
     // Execute the query and get a response back
     val client = HttpClientBuilder.create.build
     val request = this.connect
+
+    Logger.info("Connected to Github API server")
     val requestQuery = new StringEntity(query.queryString)
     request.setEntity(requestQuery)
 
 //    sends the request
     val response = client.execute(request)
-
+    Logger.info("Request sent")
 //    returns an input stream if it returns something
     response.getEntity match {
       case null =>
+        Logger.error("Response returned null")
         null
       case x if x != null =>
+        Logger.info("Request was a success")
         fromInputStream(x.getContent).getLines.mkString
     }
   }
 
   //  Retrieves more data from github api by pagination
   private def paginateRequest[A <: Query](q: A, nodes: List[Edges], requestCount: Int ): List[Edges] = {
-    println("Fetching Repo Data: " + nodes.length + " / " + requestCount)
+    Logger.info("Fetching Data: {}/{}", nodes.length, requestCount)
+//    println("Fetching Repo Data: " + nodes.length + " / " + requestCount)
 
     // If we've got all of the data, or a good chunk of it return the data
     if(nodes.length >= requestCount){
       return nodes
     } else if(nodes.length >= 100) {
-      println("Stopping early at 500 results")
+      Logger.info("Stopping early at 500 results")
       return nodes
     }
 
@@ -74,7 +79,7 @@ case class GQLClient (connectionURL:String, headers: List[(String, String)]) {
 
   // Executes a query
   def executeQuery[A <: Query](q: A): List[Node] = {
-    println("Fetching Initial User Data")
+    Logger.info("Fetching Initial Data")
     val jsonRes = this.execute(q)
     implicit val formats = DefaultFormats
     val res = parse(jsonRes).extract[JSONFormat]
@@ -83,7 +88,7 @@ case class GQLClient (connectionURL:String, headers: List[(String, String)]) {
       nonPaginatedData.map(_.node)
     }
     else{
-      println("TIMED OUT")
+      Logger.error("API call timed out please re-execute program")
       List[Node]()
     }
   }
@@ -96,13 +101,17 @@ case class ClientBuilder[ConnectionParameters <: ClientBuilder.ConnectionParamet
   headers: List[(String, String)] = List()) // Optional
 {
   import ClientBuilder.ConnectionParameters._
+  val Logger = LoggerFactory.getLogger( classOf[ClientBuilder[ConnectionParameters]])
 
   // copies and returns this object with connection Url modified
-  def setConnectionURL(url: String): ClientBuilder[ConnectionParameters with ConnectionURL] =
+  def setConnectionURL(url: String): ClientBuilder[ConnectionParameters with ConnectionURL] = {
+    Logger.info("Setting up connection url: {}", url)
     this.copy(connectionURL = url)
+  }
 
   // copies and returns this object with the headers stored in the data structure
   def setHeader(key: String, value: String): ClientBuilder[ConnectionParameters with Empty] = {
+    Logger.info("Setting up connection headers: ({}, {})", key, value)
     var newHeaders = headers
     newHeaders = newHeaders:+(key, value)
     this.copy(headers = newHeaders)
@@ -113,7 +122,10 @@ case class ClientBuilder[ConnectionParameters <: ClientBuilder.ConnectionParamet
     this.setHeader("Authorization", authType + " " + value)
 
   // builds a github object
-  def build(implicit ev: ConnectionParameters =:= RequiredClientParameters): GQLClient = GQLClient(connectionURL, headers)
+  def build(implicit ev: ConnectionParameters =:= RequiredClientParameters): GQLClient = {
+    Logger.info("Building GQLClient")
+    GQLClient(connectionURL, headers)
+  }
 }
 
 // sealed traits specifies which parameters are required in creating the object

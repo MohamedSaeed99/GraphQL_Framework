@@ -1,35 +1,14 @@
 package com.cs474.Query
-
-//parsing of the ISSUE type response
-//case class Author(
-//                   url: String,
-//                   login: String
-//                 )
-//case class Node(
-//                 name: String,
-//                 login: String,
-//                 url: String
-//               )
-//case class Edges(node: Node)
-//case class Assignees(edges: List[Edges])
-//case class IssueNode(
-//                      title: Option[String],
-//                      url: Option[String],
-//                      body: Option[String],
-//                      locked: Option[Boolean],
-//                      state: Option[String],
-//                      author: Option[Author],
-//                    )
-//case class IssueSearchEdges(node: IssueNode, cursor: String)
-//case class IssueSearch(issueCount: Int, edges: List[IssueSearchEdges])
-//case class IssueData(search: IssueSearch)
-//case class IssueSearchJSONFormat(data: IssueData)
-
+import org.slf4j.{Logger, LoggerFactory};
 
 // Filter status for the ISSUE type response
 case class Status(n: Node)(f: String=>Boolean){
+  val Logger = LoggerFactory.getLogger( classOf[Status])
   def compare(): Boolean={
-    if(n.state.isEmpty) false
+    if(n.state.isEmpty) {
+      Logger.warn("States is Empty.")
+      false
+    }
     else f(n.state.get)
   }
 }

@@ -56,11 +56,11 @@ case class Node(
   def extract[A<:InformationExtraction] (l: List[A]): Node={
     for(dataInfo <- l){
       val str: Option[String] = dataInfo.extractData(this)
-      if(str.isEmpty){println(str)}
-      else{
+      if(!str.isEmpty) {
         println(str.get)
       }
     }
+    println("==========================================")
     this
   }
 }

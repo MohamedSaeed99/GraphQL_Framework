@@ -1,35 +1,16 @@
 package com.cs474.Query
 
-//parsing of the USER type response
-//case class Followers(followers: Double)
-//case class Following(following: Double)
-//case class NameURLNode(name: String)
-//case class GitDataEdges(node: NameURLNode)
-//case class UserGitData(edges: List[GitDataEdges])
-//case class UserNode(
-//                 username: Option[String],
-//                 email: Option[String],
-//                 url: Option[String],
-//                 followers: Option[Followers],
-//                 following: Option[Following],
-//                 organizations: Option[UserGitData],
-//                 watching: Option[UserGitData],
-//                 repositories: Option[UserGitData],
-//                 repositoriesContributedTo: Option[UserGitData]
-//               )
-//case class UserSearchEdges(node: UserNode, cursor: String)
-//case class UserSearchJSON(
-//                           userCount: Double,
-//                           edges: List[UserSearchEdges]
-//                 )
-//case class UserDataJSON(search: UserSearchJSON)
-//case class UserSearchJSONFormat(data: UserDataJSON)
-
+import org.slf4j.LoggerFactory;
 
 // Filter specific for the REPOSITORY type response
 case class FollowingFilter(n: Node)(f: Double => Boolean) {
+  val Logger = LoggerFactory.getLogger( classOf[FollowingFilter])
+
   def compare(): Boolean={
-    if(n.following.isEmpty) false
+    if(n.following.isEmpty) {
+      Logger.info("Following attribute is empty")
+      false
+    }
     else f(n.following.get.following)
   }
 }
@@ -44,6 +25,7 @@ case class UserQuery(query:String, queryBuilder: UserQueryBuilder) extends Query
 //UserQuery builder that would build a type USER search query
 case class UserQueryBuilder(specs: List[(String, String)] = List(),
                             cursor:String=null, query:String="") extends QueryBuilder{
+  val Logger = LoggerFactory.getLogger( classOf[UserQueryBuilder])
 
   def setCursor(c: String): UserQueryBuilder = {
     this.copy(cursor= "\"" + c + "\"")
@@ -51,6 +33,7 @@ case class UserQueryBuilder(specs: List[(String, String)] = List(),
 
   // sets the specifications for Followers
   def setFollowers(follow:String): UserQueryBuilder = {
+    Logger.info("Setting up specifications for followers: {}", follow)
     var newSpec = specs
     newSpec = newSpec:+("followers:", follow)
     this.copy(specs=newSpec)
@@ -58,6 +41,7 @@ case class UserQueryBuilder(specs: List[(String, String)] = List(),
 
   // sets specifications for a specific user
   def setUser(username:String): UserQueryBuilder = {
+    Logger.info("Getting a specific user: {}", username)
     var newSpec = specs
     newSpec = newSpec:+("user:", username)
     this.copy(specs = newSpec)
@@ -65,6 +49,7 @@ case class UserQueryBuilder(specs: List[(String, String)] = List(),
 
   // sets specifications for a location
   def setLocation(loc: String): UserQueryBuilder = {
+    Logger.info("Setting up specifications for location: {}", loc)
     var newSpec = specs
     newSpec = newSpec:+("location:", loc)
     this.copy(specs = newSpec)
@@ -72,6 +57,7 @@ case class UserQueryBuilder(specs: List[(String, String)] = List(),
 
   // sets specifications for number of repos
   def setNumRepos(total: String): UserQueryBuilder = {
+    Logger.info("Setting up specifications for total repos: {}", total)
     var newSpec = specs
     newSpec = newSpec:+("repos:", total)
     this.copy(specs = newSpec)
@@ -79,6 +65,7 @@ case class UserQueryBuilder(specs: List[(String, String)] = List(),
 
  // sets specifications for a language
   def setLanguage(lang: String): UserQueryBuilder = {
+    Logger.info("Setting up specifications for language: {}", lang)
     var newSpec = specs
     newSpec = newSpec:+("language:", lang)
     this.copy(specs = newSpec)
@@ -96,7 +83,7 @@ case class UserQueryBuilder(specs: List[(String, String)] = List(),
       specifications = "repos:>1 "
     }
 
-    println(specifications)
+    Logger.info("Building a User query with these specifications => {}", specifications)
 
     // builds the query
     var newQuery = query
