@@ -87,7 +87,7 @@ case class UserQueryBuilder(specs: List[(String, String)] = List(),
 
     // builds the query
     var newQuery = query
-    newQuery = "{\"query\":\"" + "query listUser($specifics:String!, $pagination:Int!, $cursor:String) {"+
+    newQuery = "{\"query\":\"" + "query listUser($specifics:String!, $cursor:String) {"+
       "search(query:$specifics, type: USER, first:50, after:$cursor) { " +
       "count: userCount "+
       "edges { "+
