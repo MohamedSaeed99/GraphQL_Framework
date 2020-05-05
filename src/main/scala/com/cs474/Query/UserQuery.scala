@@ -24,7 +24,8 @@ case class UserQuery(query:String, queryBuilder: UserQueryBuilder) extends Query
 
 //UserQuery builder that would build a type USER search query
 case class UserQueryBuilder(specs: List[(String, String)] = List(),
-                            cursor:String=null, query:String="") extends QueryBuilder{
+                            cursor:String=null,
+                            query:String="") extends QueryBuilder{
   val Logger = LoggerFactory.getLogger( classOf[UserQueryBuilder])
 
   def setCursor(c: String): UserQueryBuilder = {
@@ -105,6 +106,7 @@ case class UserQueryBuilder(specs: List[(String, String)] = List(),
     "} } }\", "+
     "\"variables\":{\"specifics\":\"" + specifications + "\", \"cursor\":" + cursor + "}, " +
     "\"operationName\":\"listUser\"}"
+
     // returns an object with the built query command
     UserQuery(newQuery, this.copy())
   }

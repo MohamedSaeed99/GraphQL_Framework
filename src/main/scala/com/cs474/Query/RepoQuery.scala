@@ -37,8 +37,10 @@ case class PullRequest(n:Node)(f: Double => Boolean) {
     else f(n.pullRequests.get.totalPulls.get)
   }
 }
+
 case class LanguageFilter(n:Node)(f: Double => Boolean) {
   val Logger = LoggerFactory.getLogger( classOf[LanguageFilter])
+
   def compare(): Boolean={
     if(n.languages.isEmpty) {
       Logger.info("Language attribute is empty")
@@ -123,7 +125,7 @@ case class RepoQueryBuilder( user:String=null, stars:String=null,
       "url "+
       "object(expression:$branch) { ... on Commit { history { totalCommits: totalCount } } } "+
       "primaryLanguage { name } " +
-      "languages(first:5){ totalCount nodes{ name } } " +
+      "languages(first:50){ totalCount nodes{ name } } " +
       "pullRequests{ totalPulls: totalCount } " +
       "issues{ totalIssues: totalCount } "+
       "stargazers{ starCount: totalCount } "+
