@@ -1,12 +1,15 @@
 package com.cs474
 
 import Query._
+import com.typesafe.config.ConfigFactory
+
 
 object Main extends App{
+  val config = ConfigFactory.load("application.conf")
   val githubObject = new ClientBuilder[ClientBuilder.ConnectionParameters.Empty]()
-    .setConnectionURL("https://api.github.com/graphql")
+    .setConnectionURL(config.getString("URL"))
     .setHeader("Accept", "application/json")
-    .setAuthorization("Bearer","f6f8623d4f23b15c9b60b328e9f77d49f28274a7")
+    .setAuthorization("Bearer",config.getString("OAUTH_KEY"))
     .build
 
 //  val q = (new QueryCommand()).setRepoQuery().build
