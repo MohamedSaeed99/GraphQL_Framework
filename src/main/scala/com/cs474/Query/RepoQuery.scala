@@ -68,7 +68,7 @@ case class RepoQuery(query: String, queryBuilder: RepoQueryBuilder) extends Quer
 
 
 //RepoQuery builder that would build a type REPOSITORY search query
-case class RepoQueryBuilder( user:String=null, stars:String=null,
+case class RepoQueryBuilder(user:String=null, stars:String=null,
                              language:List[String]=List(),cursor:String=null, query:String="") extends QueryBuilder{
 
   val Logger: Logger = LoggerFactory.getLogger( classOf[RepoQueryBuilder])
@@ -136,7 +136,7 @@ case class RepoQueryBuilder( user:String=null, stars:String=null,
       "url " +
       "object(expression:$branch) { ... on Commit { history { totalCommits: totalCount } } } " +
       "primaryLanguage { name } " +
-      "languages(first:5){ totalCount nodes{ name } } " +
+      "languages(first:50){ totalCount nodes{ name } } " +
       "pullRequests{ totalPulls: totalCount } " +
       "issues{ totalIssues: totalCount } " +
       "stargazers{ starCount: totalCount } " +

@@ -18,10 +18,17 @@ object Main extends App{
     .filter(LanguageFilter(_)(_<3).compare()).filter(CommitsFilter(_)(_>10).compare())
     .map(_.extract(List(GetCommitCount(), GetIssues(), GetLanguages(), GetPrimaryLanguage(), GetBody())))
 
+
 //
 //  val u1 = ((new QueryCommand()).setUserQuery().setUser("MDausch").build)
 //  val ur1 : List[Node] = githubObject.executeQuery(u1)
 //  println(ur1)
+
+  //  val u1 = ((new QueryCommand()).setUserQuery().build)
+  //  val ur1 : List[Node] = githubObject.executeQuery(u1).filter(FollowingFilter(_)(_<100).compare())
+  //  println(ur1)
+
+
 //
 
 //  val i = (new QueryCommand()).setIssueQuery("test").build
@@ -31,4 +38,6 @@ object Main extends App{
 //  !_.locked gets all the unlocked repos
 //  _.locked gets all the locked repos
 //  println(ir.filter(!_.locked).filter(Status(_)(_.equalsIgnoreCase("open")).compare))
+
+
 }

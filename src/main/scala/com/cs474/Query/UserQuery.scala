@@ -99,13 +99,15 @@ case class UserQueryBuilder(specs: List[(String, String)] = List(),
             "url "+
             "followers { followers: totalCount } "+
             "following { following: totalCount } "+
-            "repositories(first:5) { edges { node { name url } } } "+
+            "location " +
+            "repositories(first:50) { totalCount edges { node { name url } } } "+
           "}" +
         "}" +
         "cursor" +
     "} } }\", "+
     "\"variables\":{\"specifics\":\"" + specifications + "\", \"cursor\":" + cursor + "}, " +
     "\"operationName\":\"listUser\"}"
+
     // returns an object with the built query command
     UserQuery(newQuery, this.copy())
   }

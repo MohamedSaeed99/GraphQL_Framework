@@ -5,10 +5,10 @@ case class Followers(followers: Double)
 case class Following(following: Double)
 case class NameURLNode(name: String)
 case class GitDataEdges(node: NameURLNode)
-case class UserGitData(edges: List[GitDataEdges])
+case class UserGitData(totalCount: Double, edges: List[GitDataEdges])
 case class History( totalCommits: Option[Int] )
 case class ObjectBis( history: Option[History] )
-case class PrimaryLanguage( name: Option[String] )
+case class PrimaryLanguage( name: String )
 case class Languages( totalCount: Double,  nodes: List[PrimaryLanguage] )
 case class PullRequests( totalPulls: Option[Double] )
 case class Issues( totalIssues: Option[Double] )
@@ -27,31 +27,29 @@ case class UserInfo(
                )
 case class UserEdges(node: UserInfo)
 case class Assignees(edges: List[UserEdges])
-
-
 case class Node(
-                     repoName: Option[String],
-                     repoDesc: Option[String],
-                     url: Option[String],
-                     `object`: Option[ObjectBis],
-                     primaryLanguage: Option[PrimaryLanguage],
-                     languages: Option[Languages],
-                     pullRequests: Option[PullRequests],
-                     issues: Option[Issues],
-                     stargazers: Option[Stargazers],
-                     owner: Option[Owner],
-                     title: Option[String],
-                     body: Option[String],
-                     locked: Option[Boolean],
-                     state: Option[String],
-                     author: Option[Author],
-                     username: Option[String],
-                     email: Option[String],
-                     followers: Option[Followers],
-                     following: Option[Following],
-                     repositories: Option[UserGitData]
-                   ){
-
+           repoName: Option[String],
+           repoDesc: Option[String],
+           url: Option[String],
+           `object`: Option[ObjectBis],
+           primaryLanguage: Option[PrimaryLanguage],
+           languages: Option[Languages],
+           pullRequests: Option[PullRequests],
+           issues: Option[Issues],
+           stargazers: Option[Stargazers],
+           owner: Option[Owner],
+           title: Option[String],
+           body: Option[String],
+           locked: Option[Boolean],
+           state: Option[String],
+           author: Option[Author],
+           username: Option[String],
+           email: Option[String],
+           followers: Option[Followers],
+           following: Option[Following],
+           location: Option[String],
+           repositories: Option[UserGitData]
+         ){
   //  goes extracts the data from each node
   def extract[A<:InformationExtraction] (l: List[A]): Node={
     for(dataInfo <- l){
@@ -86,19 +84,25 @@ abstract class QueryBuilder{
 //Builder to build the query
 class QueryCommand ()
 {
-//  Sets the type of search query to REPOSITORY type
+
+  // TODO
+//  def setMaximumNumberOfResults(numResults: Int): QueryCommand = {
+//
+//  }
+
+  // Sets the type of search query to REPOSITORY type
   def setRepoQuery(): RepoQueryBuilder={
     val repoQuery:RepoQueryBuilder = RepoQueryBuilder()
     repoQuery
   }
 
-//  Sets the type of search query to a USER type
+  // Sets the type of search query to a USER type
   def setUserQuery(): UserQueryBuilder={
     val userQuery:UserQueryBuilder = UserQueryBuilder()
     userQuery
   }
 
-//  Sets the type of search query to a ISSUE type
+  // Sets the type of search query to a ISSUE type
   def setIssueQuery(searchWord: String): IssueQueryBuilder={
     val issueQuery:IssueQueryBuilder = IssueQueryBuilder("in:title " + searchWord)
     issueQuery

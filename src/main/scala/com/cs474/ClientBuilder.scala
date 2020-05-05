@@ -10,7 +10,7 @@ import org.json4s.jackson.JsonMethods._
 
 import scala.io.Source.fromInputStream
 
-//Connection to the Github API
+// Connection to the Github API
 case class GQLClient (connectionURL:String, headers: List[(String, String)]) {
   val Logger: Logger = LoggerFactory.getLogger( classOf[GQLClient])
 
@@ -23,7 +23,7 @@ case class GQLClient (connectionURL:String, headers: List[(String, String)]) {
     httpUriRequest
   }
 
-  //  Sends the request and retrieves response
+  // Sends the request and retrieves response
   private def execute[A](query: Query): JsonInput = {
     // Execute the query and get a response back
     val client = HttpClientBuilder.create.build
@@ -33,10 +33,11 @@ case class GQLClient (connectionURL:String, headers: List[(String, String)]) {
     val requestQuery = new StringEntity(query.queryString)
     request.setEntity(requestQuery)
 
-//    sends the request
+    // sends the request
     val response = client.execute(request)
     Logger.info("Request sent")
-//    returns an input stream if it returns something
+
+    // returns an input stream if it returns something
     response.getEntity match {
       case null =>
         Logger.error("Response returned null")
@@ -55,8 +56,8 @@ case class GQLClient (connectionURL:String, headers: List[(String, String)]) {
     // If we've got all of the data, or a good chunk of it return the data
     if(nodes.length >= requestCount){
       return nodes
-    } else if(nodes.length >= 100) {
-      Logger.info("Stopping early at 500 results")
+    } else if(nodes.length >= 50) {
+      println("Stopping early at 500 results")
       return nodes
     }
 
@@ -68,7 +69,6 @@ case class GQLClient (connectionURL:String, headers: List[(String, String)]) {
 
     // Rebuild the query but with the last cursor set
     val jsonRes = this.execute(q.builder.setCursor(cursor).build)
-    println(jsonRes)
     implicit val formats = DefaultFormats
     val res = parse(jsonRes).extract[JSONFormat]
     val ret = res.data.search.edges
@@ -83,12 +83,13 @@ case class GQLClient (connectionURL:String, headers: List[(String, String)]) {
     val jsonRes = this.execute(q)
     implicit val formats = DefaultFormats
     val res = parse(jsonRes).extract[JSONFormat]
+
     if(res.data != null) {
       val nonPaginatedData = paginateRequest(q, res.data.search.edges, res.data.search.count)
       nonPaginatedData.map(_.node)
     }
     else{
-      Logger.error("API call timed out please re-execute program")
+      Logger.error("API request error: " + jsonRes)
       List[Node]()
     }
   }

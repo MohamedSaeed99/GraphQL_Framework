@@ -52,7 +52,7 @@ case class GetPrimaryLanguage() extends InformationExtraction{
   override def extractData(n: Node): Option[String] = if(n.primaryLanguage.isEmpty) {
     Logger.warn("Primary language attribute is empty")
     None
-  } else Some("Primary Language: "+ n.primaryLanguage.get.name.get)
+  } else Some("Primary Language: "+ n.primaryLanguage.get.name)
 }
 
 //extracts the total number and the languages used in a repo
@@ -66,7 +66,7 @@ case class GetLanguages() extends InformationExtraction{
     } else {
       var str = "Languages: " + n.languages.get.totalCount.toString + "\n"
       for (pl <- n.languages.get.nodes) {
-        str += "\t" + pl.name.get + "\n"
+        str += "\t" + pl.name + "\n"
       }
       Some(str)
     }
