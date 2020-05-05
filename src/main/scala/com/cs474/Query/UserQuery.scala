@@ -99,7 +99,8 @@ case class UserQueryBuilder(specs: List[(String, String)] = List(),
             "url "+
             "followers { followers: totalCount } "+
             "following { following: totalCount } "+
-            "repositories(first:5) { edges { node { name url } } } "+
+            "location " +
+            "repositories(first:50) { totalCount edges { node { name url } } } "+
           "}" +
         "}" +
         "cursor" +

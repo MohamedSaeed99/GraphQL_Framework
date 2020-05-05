@@ -5,7 +5,7 @@ case class Followers(followers: Double)
 case class Following(following: Double)
 case class NameURLNode(name: String)
 case class GitDataEdges(node: NameURLNode)
-case class UserGitData(edges: List[GitDataEdges])
+case class UserGitData(totalCount: Double, edges: List[GitDataEdges])
 case class History( totalCommits: Option[Int] )
 case class ObjectBis( history: Option[History] )
 case class PrimaryLanguage( name: String )
@@ -47,6 +47,7 @@ case class Node(
            email: Option[String],
            followers: Option[Followers],
            following: Option[Following],
+           location: Option[String],
            repositories: Option[UserGitData]
          ){
   //  goes extracts the data from each node

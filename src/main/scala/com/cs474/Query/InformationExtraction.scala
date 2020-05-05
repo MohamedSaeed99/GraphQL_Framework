@@ -19,7 +19,7 @@ case class GetCommitCount() extends InformationExtraction {
   override def extractData(n:Node): Option[String] = if(n.`object`.isEmpty) None else Some("Commit Total: " + n.`object`.get.history.get.totalCommits.get.toString)
 }
 case class GetPrimaryLanguage() extends InformationExtraction{
-  override def extractData(n: Node): Option[String] = if(n.primaryLanguage.isEmpty) None else Some("Primary Language: "+ n.primaryLanguage.get.name.get)
+  override def extractData(n: Node): Option[String] = if(n.primaryLanguage.isEmpty) None else Some("Primary Language: "+ n.primaryLanguage.get.name)
 }
 
 case class GetLanguages() extends InformationExtraction{
@@ -29,7 +29,7 @@ case class GetLanguages() extends InformationExtraction{
     else {
       var str = "Languages: " + n.languages.get.totalCount.toString + "\n"
       for (pl <- n.languages.get.nodes) {
-        str += "\t" + pl.name.get + "\n"
+        str += "\t" + pl.name + "\n"
       }
       Some(str)
     }
