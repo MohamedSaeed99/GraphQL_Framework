@@ -1,6 +1,7 @@
 package com.cs474
 
 import com.cs474.Query._
+import com.typesafe.config.ConfigFactory
 import org.apache.http.client.methods.HttpPost
 import org.slf4j.{Logger, LoggerFactory}
 import org.apache.http.entity.StringEntity
@@ -9,6 +10,41 @@ import org.json4s._
 import org.json4s.jackson.JsonMethods._
 
 import scala.io.Source.fromInputStream
+
+
+trait Header
+trait Value
+
+//Objects that represents strings
+object Bearer extends Header{
+  override def toString: String = "Bearer"
+}
+object Accept extends Header{
+  override def toString: String = "Accept"
+}
+object Authorization extends Header{
+  override def toString: String = "Authorization"
+}
+object Appjson extends Value{
+  override def toString: String = "application/json"
+}
+
+// retrieves the auth key from the config file
+case class GetKey() extends Value {
+  def keyValue:String = {
+    val config = ConfigFactory.load("application.conf")
+    config.getString("OAUTH_KEY")
+  }
+}
+
+//retrieves the url from the connection file
+case class GetConnectionUrl() extends Value {
+  def urlString:String = {
+    val config = ConfigFactory.load("application.conf")
+    config.getString("URL")
+  }
+}
+
 
 // Connection to the Github API
 case class GQLClient (connectionURL:String, headers: List[(String, String)]) {
@@ -112,16 +148,20 @@ case class ClientBuilder[ConnectionParameters <: ClientBuilder.ConnectionParamet
   }
 
   // copies and returns this object with the headers stored in the data structure
-  def setHeader(key: String, value: String): ClientBuilder[ConnectionParameters with Empty] = {
+  def setHeader(key: Header, value: Value): ClientBuilder[ConnectionParameters with Empty] = {
     Logger.info("Setting up connection headers: ({}, {})", key, value)
     var newHeaders = headers
-    newHeaders = newHeaders:+(key, value)
+    newHeaders = newHeaders:+(key.toString, value.toString)
     this.copy(headers = newHeaders)
   }
 
   // copies and returns this object with the headers stored in the data structure
-  def setAuthorization(authType: String, value: String): ClientBuilder[ConnectionParameters with Empty] =
-    this.setHeader("Authorization", authType + " " + value)
+  def setAuthorization(authType: Header, value: String): ClientBuilder[ConnectionParameters with Empty] = {
+    var newHeaders = headers
+    Logger.info("Setting up connection authorization: ({}, {})", authType.toString, value)
+    newHeaders = newHeaders:+(Authorization.toString, authType.toString + " " + value)
+    this.copy(headers = newHeaders)
+  }
 
   // builds a github object
   def build(implicit ev: ConnectionParameters =:= RequiredClientParameters): GQLClient = {

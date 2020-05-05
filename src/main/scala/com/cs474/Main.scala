@@ -5,18 +5,17 @@ import com.typesafe.config.ConfigFactory
 
 
 object Main extends App{
-  val config = ConfigFactory.load("application.conf")
   val githubObject = new ClientBuilder[ClientBuilder.ConnectionParameters.Empty]()
-    .setConnectionURL(config.getString("URL"))
-    .setHeader("Accept", "application/json")
-    .setAuthorization("Bearer",config.getString("OAUTH_KEY"))
+    .setConnectionURL(GetConnectionUrl().urlString)
+    .setHeader(Accept, Appjson)
+    .setAuthorization(Bearer,GetKey().keyValue)
     .build
 
 //  val q = (new QueryCommand()).setRepoQuery().build
 //  val response : List[Node] = (githubObject.executeQuery(q))
 //  println(response)
 
-  val q = new QueryCommand().setRepoQuery().setLanguage(List("Java", "Python")).build
+  val q = new QueryCommand().setRepoQuery().setLanguage(List(Python, Java)).build
   val response : List[Node] = (githubObject.executeQuery(q))
     .filter(LanguageFilter(_)(_<3).compare()).filter(CommitsFilter(_)(_>10).compare())
     .map(_.extract(List(GetCommitCount(), GetIssues(), GetLanguages(), GetPrimaryLanguage(), GetBody())))

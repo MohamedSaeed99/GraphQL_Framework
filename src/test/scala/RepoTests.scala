@@ -1,5 +1,5 @@
 import org.scalatest._
-import com.cs474.ClientBuilder
+import com.cs474.{Accept, Appjson, Bearer, ClientBuilder, GetConnectionUrl, GetKey}
 import com.cs474.Query._
 import org.apache.http.impl.client.HttpClientBuilder
 
@@ -14,9 +14,9 @@ class RepoTests extends FlatSpec with Matchers{
 
     // Execute it
     val githubObject = new ClientBuilder[ClientBuilder.ConnectionParameters.Empty]()
-      .setConnectionURL("https://api.github.com/graphql")
-      .setHeader("Accept", "application/json")
-      .setAuthorization("Bearer","f6f8623d4f23b15c9b60b328e9f77d49f28274a7")
+      .setConnectionURL(GetConnectionUrl().urlString)
+      .setHeader(Accept, Appjson)
+      .setAuthorization(Bearer,GetKey().keyValue)
       .build
 
     // Build the query
@@ -61,9 +61,9 @@ class RepoTests extends FlatSpec with Matchers{
 
     // Execute it
     val githubObject = new ClientBuilder[ClientBuilder.ConnectionParameters.Empty]()
-      .setConnectionURL("https://api.github.com/graphql")
-      .setHeader("Accept", "application/json")
-      .setAuthorization("Bearer","f6f8623d4f23b15c9b60b328e9f77d49f28274a7")
+      .setConnectionURL(GetConnectionUrl().urlString)
+      .setHeader(Accept,Appjson)
+      .setAuthorization(Bearer,GetKey().keyValue)
       .build
 
     // Build the query
@@ -86,13 +86,13 @@ class RepoTests extends FlatSpec with Matchers{
 
     // Execute it
     val githubObject = new ClientBuilder[ClientBuilder.ConnectionParameters.Empty]()
-      .setConnectionURL("https://api.github.com/graphql")
-      .setHeader("Accept", "application/json")
-      .setAuthorization("Bearer","f6f8623d4f23b15c9b60b328e9f77d49f28274a7")
+      .setConnectionURL(GetConnectionUrl().urlString)
+      .setHeader(Accept, Appjson)
+      .setAuthorization(Bearer,GetKey().keyValue)
       .build
 
     // Build the query
-    val repoQ = (new QueryCommand()).setRepoQuery().setLanguage(List("java", "scala"))
+    val repoQ = (new QueryCommand()).setRepoQuery().setLanguage(List(Java, Scala))
 
     val built1 = repoQ.build
     val built1Response : List[Node] = (githubObject.executeQuery(built1))
@@ -108,13 +108,13 @@ class RepoTests extends FlatSpec with Matchers{
 
     // Execute it
     val githubObject = new ClientBuilder[ClientBuilder.ConnectionParameters.Empty]()
-      .setConnectionURL("https://api.github.com/graphql")
-      .setHeader("Accept", "application/json")
-      .setAuthorization("Bearer","f6f8623d4f23b15c9b60b328e9f77d49f28274a7")
+      .setConnectionURL(GetConnectionUrl().urlString)
+      .setHeader(Accept, Appjson)
+      .setAuthorization(Bearer,GetKey().keyValue)
       .build
 
     // Build the query
-    val repoQ = (new QueryCommand()).setRepoQuery().setLanguage(List("java", "scala"))
+    val repoQ = (new QueryCommand()).setRepoQuery().setLanguage(List(Java, Scala))
 
     val built1 = repoQ.build
     val built1Response : List[Node] = (githubObject.executeQuery(built1))
@@ -132,13 +132,13 @@ class RepoTests extends FlatSpec with Matchers{
 
     // Execute it
     val githubObject = new ClientBuilder[ClientBuilder.ConnectionParameters.Empty]()
-      .setConnectionURL("https://api.github.com/graphql")
-      .setHeader("Accept", "application/json")
-      .setAuthorization("Bearer","f6f8623d4f23b15c9b60b328e9f77d49f28274a7")
+      .setConnectionURL(GetConnectionUrl().urlString)
+      .setHeader(Accept, Appjson)
+      .setAuthorization(Bearer,GetKey().keyValue)
       .build
 
     // Build the query
-    val repoQ = (new QueryCommand()).setRepoQuery().setLanguage(List("java", "scala"))
+    val repoQ = (new QueryCommand()).setRepoQuery().setLanguage(List(Java, Scala))
 
     val built1 = repoQ.build
     val built1Response : List[Node] = (githubObject.executeQuery(built1))

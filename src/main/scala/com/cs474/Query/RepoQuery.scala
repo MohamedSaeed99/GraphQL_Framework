@@ -2,6 +2,28 @@ package com.cs474.Query
 
 import org.slf4j.{Logger, LoggerFactory}
 
+
+trait Lang
+object Java extends Lang{
+  override def toString: String = "java"
+}
+object Scala extends Lang{
+  override def toString: String = "scala"
+}
+object Python extends Lang{
+  override def toString: String = "python"
+}
+object JavaScript extends Lang{
+  override def toString: String = "javascript"
+}
+object C extends Lang{
+  override def toString: String = "c"
+}
+object Shell extends Lang{
+  override def toString: String = "shell"
+}
+
+
 //filters the data based on the number of commits are in a repo
 case class CommitsFilter(n:Node)(f: Double => Boolean) {
   val Logger: Logger = LoggerFactory.getLogger( classOf[CommitsFilter])
@@ -69,12 +91,12 @@ case class RepoQuery(query: String, queryBuilder: RepoQueryBuilder) extends Quer
 
 //RepoQuery builder that would build a type REPOSITORY search query
 case class RepoQueryBuilder(user:String=null, stars:String=null,
-                             language:List[String]=List(),cursor:String=null, query:String="") extends QueryBuilder{
+                             language:List[Lang]=List(),cursor:String=null, query:String="") extends QueryBuilder{
 
   val Logger: Logger = LoggerFactory.getLogger( classOf[RepoQueryBuilder])
 
   // Stores the language variables in query builder creates a new copy of this object with the modified query builder
-  def setLanguage(languages: List[String]): RepoQueryBuilder = {
+  def setLanguage(languages: List[Lang]): RepoQueryBuilder = {
     Logger.info("Setting up specifications for languages: {}", languages)
     val newVariables = languages
     this.copy(language=newVariables)
@@ -118,7 +140,7 @@ case class RepoQueryBuilder(user:String=null, stars:String=null,
     // concatenates the specifications together
     for (q <- language){
       specifications += "language:"
-      specifications += q
+      specifications += q.toString
       specifications += " "
     }
 
