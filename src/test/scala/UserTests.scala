@@ -25,7 +25,7 @@ class UserTests extends FlatSpec with Matchers{
     // Verify result
     assert(response.length === 1)
     for (node <- response){
-      println(node)
+//      println(node)
       node.username.get shouldEqual("MDausch")
     }
   }
@@ -45,7 +45,7 @@ class UserTests extends FlatSpec with Matchers{
 
     // Verify result
     for (node <- response){
-      println(node)
+//      println(node)
       assert(node.followers.get.followers > 100)
     }
   }
@@ -65,7 +65,7 @@ class UserTests extends FlatSpec with Matchers{
 
     // Verify result
     for (node <- response){
-      println(node)
+//      println(node)
       assert(node.repositories.get.totalCount > 50)
     }
   }
@@ -85,7 +85,7 @@ class UserTests extends FlatSpec with Matchers{
 
     // Verify result
     for (node <- response){
-      println(node)
+//      println(node)
       assert(node.location.get.toLowerCase contains "chicago")
     }
   }

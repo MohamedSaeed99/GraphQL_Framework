@@ -69,7 +69,6 @@ case class GQLClient (connectionURL:String, headers: List[(String, String)]) {
 
     // Rebuild the query but with the last cursor set
     val jsonRes = this.execute(q.builder.setCursor(cursor).build)
-    println(jsonRes)
     implicit val formats = DefaultFormats
     val res = parse(jsonRes).extract[JSONFormat]
     val ret = res.data.search.edges
@@ -85,15 +84,12 @@ case class GQLClient (connectionURL:String, headers: List[(String, String)]) {
     implicit val formats = DefaultFormats
     val res = parse(jsonRes).extract[JSONFormat]
 
-    println(res)
-
     if(res.data != null) {
       val nonPaginatedData = paginateRequest(q, res.data.search.edges, res.data.search.count)
       nonPaginatedData.map(_.node)
     }
     else{
-      Logger.error("API call timed out please re-execute program")
-      println(jsonRes)
+      Logger.error("API request error: " + jsonRes)
       List[Node]()
     }
   }

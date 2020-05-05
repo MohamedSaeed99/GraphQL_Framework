@@ -58,7 +58,7 @@ case class RepoQuery(query: String, queryBuilder: RepoQueryBuilder) extends Quer
 }
 
 //RepoQuery builder that would build a type REPOSITORY search query
-case class RepoQueryBuilder( user:String=null, stars:String=null,
+case class RepoQueryBuilder(user:String=null, stars:String=null,
                              language:List[String]=List(),cursor:String=null, query:String="") extends QueryBuilder{
 
   val Logger = LoggerFactory.getLogger( classOf[RepoQueryBuilder])

@@ -33,4 +33,6 @@ object Main extends App{
 //  !_.locked gets all the unlocked repos
 //  _.locked gets all the locked repos
 //  println(ir.filter(!_.locked).filter(Status(_)(_.equalsIgnoreCase("open")).compare))
+
+
 }
