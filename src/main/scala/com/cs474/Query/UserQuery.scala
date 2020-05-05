@@ -1,10 +1,10 @@
 package com.cs474.Query
 
-import org.slf4j.LoggerFactory;
+import org.slf4j.{Logger, LoggerFactory};
 
-// Filter specific for the REPOSITORY type response
+//filters the data based on the number of following a user has
 case class FollowingFilter(n: Node)(f: Double => Boolean) {
-  val Logger = LoggerFactory.getLogger( classOf[FollowingFilter])
+  val Logger: Logger = LoggerFactory.getLogger( classOf[FollowingFilter])
 
   def compare(): Boolean={
     if(n.following.isEmpty) {
@@ -25,8 +25,9 @@ case class UserQuery(query:String, queryBuilder: UserQueryBuilder) extends Query
 //UserQuery builder that would build a type USER search query
 case class UserQueryBuilder(specs: List[(String, String)] = List(),
                             cursor:String=null, query:String="") extends QueryBuilder{
-  val Logger = LoggerFactory.getLogger( classOf[UserQueryBuilder])
+  val Logger: Logger = LoggerFactory.getLogger( classOf[UserQueryBuilder])
 
+  // sets the cursor to get the next set of data
   def setCursor(c: String): UserQueryBuilder = {
     this.copy(cursor= "\"" + c + "\"")
   }
@@ -71,7 +72,7 @@ case class UserQueryBuilder(specs: List[(String, String)] = List(),
     this.copy(specs = newSpec)
   }
 
-  // builds a github object
+  // builds a query object
   def build: UserQuery = {
 
     var specifications = ""

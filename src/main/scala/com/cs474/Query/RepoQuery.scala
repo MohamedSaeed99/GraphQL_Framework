@@ -1,47 +1,58 @@
 package com.cs474.Query
 
-import org.slf4j.LoggerFactory
+import org.slf4j.{Logger, LoggerFactory}
 
-// Filter specific for the REPOSITORY type response
-case class Commits(n:Node)(f: Double => Boolean) {
+//filters the data based on the number of commits are in a repo
+case class CommitsFilter(n:Node)(f: Double => Boolean) {
+  val Logger: Logger = LoggerFactory.getLogger( classOf[CommitsFilter])
+
+  // uses the lambda function to return a boolean for filter
   def compare(): Boolean={
-    val Logger = LoggerFactory.getLogger( classOf[Commits])
-
+    val Logger = LoggerFactory.getLogger( classOf[CommitsFilter])
     if(n.`object`.isEmpty) {
-      Logger.info("Commit attribute is empty")
+      Logger.warn("Commit attribute is empty")
       false
     }
     else f(n.`object`.get.history.get.totalCommits.get)
   }
 }
 
-case class Issue(n:Node)(f: Double => Boolean) {
-  val Logger = LoggerFactory.getLogger( classOf[Issue])
+//filters the data based on the count of issues a repo has
+case class IssueFilter(n:Node)(f: Double => Boolean) {
+  val Logger: Logger = LoggerFactory.getLogger( classOf[IssueFilter])
+
+  // uses the lambda function to return a boolean for filter
   def compare(): Boolean={
     if(n.issues.isEmpty) {
-      Logger.info("Issues attribute is empty")
+      Logger.warn("Issues attribute is empty")
       false
     }
     else f(n.issues.get.totalIssues.get)
   }
 }
 
-case class PullRequest(n:Node)(f: Double => Boolean) {
-  val Logger = LoggerFactory.getLogger( classOf[PullRequest])
+//filters the data based on the count of pull requests in a repo
+case class PullRequestFilter(n:Node)(f: Double => Boolean) {
+  val Logger: Logger = LoggerFactory.getLogger( classOf[PullRequestFilter])
 
+  // uses the lambda function to return a boolean for filter
   def compare(): Boolean={
     if(n.pullRequests.isEmpty) {
-      Logger.info("Pullrequest attribute is empty")
+      Logger.warn("Pullrequest attribute is empty")
       false
     }
     else f(n.pullRequests.get.totalPulls.get)
   }
 }
+
+//filters the data based on the count of languages used in a repo
 case class LanguageFilter(n:Node)(f: Double => Boolean) {
-  val Logger = LoggerFactory.getLogger( classOf[LanguageFilter])
+  val Logger: Logger = LoggerFactory.getLogger( classOf[LanguageFilter])
+
+  // uses the lambda function to return a boolean for filter
   def compare(): Boolean={
     if(n.languages.isEmpty) {
-      Logger.info("Language attribute is empty")
+      Logger.warn("Language attribute is empty")
       false
     }
     else f(n.languages.get.totalCount)
@@ -55,11 +66,12 @@ case class RepoQuery(query: String, queryBuilder: RepoQueryBuilder) extends Quer
   override def builder: RepoQueryBuilder = queryBuilder
 }
 
+
 //RepoQuery builder that would build a type REPOSITORY search query
 case class RepoQueryBuilder( user:String=null, stars:String=null,
                              language:List[String]=List(),cursor:String=null, query:String="") extends QueryBuilder{
 
-  val Logger = LoggerFactory.getLogger( classOf[RepoQueryBuilder])
+  val Logger: Logger = LoggerFactory.getLogger( classOf[RepoQueryBuilder])
 
   // Stores the language variables in query builder creates a new copy of this object with the modified query builder
   def setLanguage(languages: List[String]): RepoQueryBuilder = {
@@ -87,11 +99,12 @@ case class RepoQueryBuilder( user:String=null, stars:String=null,
     this.copy(user=newUsername)
   }
 
-  // builds query based on the specifications
+  // sets the cursor to get the next set of data
   def setCursor(c: String): RepoQueryBuilder = {
     this.copy(cursor= "\"" + c + "\"")
   }
 
+  // builds a query object
   def build: RepoQuery = {
     var specifications: String = "is:public "
     if(user != null) {
@@ -112,28 +125,28 @@ case class RepoQueryBuilder( user:String=null, stars:String=null,
     Logger.info("Building a Repo query with these specifications => {}", specifications)
 
     // builds the query
-    var newQuery = "{\"query\":\"" + "query listRepos($specifics:String!, $branch:String!, $cursor:String){"+
+    val newQuery = "{\"query\":\"" + "query listRepos($specifics:String!, $branch:String!, $cursor:String){" +
       "search(query:$specifics, type: REPOSITORY, first:50, after:$cursor){ " +
-      "count: repositoryCount "+
-      "edges { "+
-      "node { "+
-      "... on Repository { "+
-      "repoName: name "+
-      "repoDesc: description "+
-      "url "+
-      "object(expression:$branch) { ... on Commit { history { totalCommits: totalCount } } } "+
+      "count: repositoryCount " +
+      "edges { " +
+      "node { " +
+      "... on Repository { " +
+      "repoName: name " +
+      "repoDesc: description " +
+      "url " +
+      "object(expression:$branch) { ... on Commit { history { totalCommits: totalCount } } } " +
       "primaryLanguage { name } " +
       "languages(first:5){ totalCount nodes{ name } } " +
       "pullRequests{ totalPulls: totalCount } " +
-      "issues{ totalIssues: totalCount } "+
-      "stargazers{ starCount: totalCount } "+
+      "issues{ totalIssues: totalCount } " +
+      "stargazers{ starCount: totalCount } " +
       "owner { ownerLogin: login ... on Organization{ OrganizationName: name OrganizationDesc: description OrganizationEmail: email } } " +
       "}" +
-    "}" +
-    "cursor" +
-    "} } }\", "+
-    "\"variables\":{\"specifics\":\""+specifications+"\", \"branch\":\"master\", \"cursor\":" + cursor + "}, " +
-    "\"operationName\":\"listRepos\"}"
+      "}" +
+      "cursor" +
+      "} } }\", " +
+      "\"variables\":{\"specifics\":\"" + specifications + "\", \"branch\":\"master\", \"cursor\":" + cursor + "}, " +
+      "\"operationName\":\"listRepos\"}"
 
     // returns an object with the built query command
     RepoQuery(newQuery, this.copy())

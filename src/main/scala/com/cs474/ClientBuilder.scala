@@ -2,17 +2,17 @@ package com.cs474
 
 import com.cs474.Query._
 import org.apache.http.client.methods.HttpPost
-import org.slf4j.LoggerFactory;
+import org.slf4j.{Logger, LoggerFactory}
 import org.apache.http.entity.StringEntity
 import org.apache.http.impl.client.HttpClientBuilder
-
 import org.json4s._
 import org.json4s.jackson.JsonMethods._
+
 import scala.io.Source.fromInputStream
 
 //Connection to the Github API
 case class GQLClient (connectionURL:String, headers: List[(String, String)]) {
-  val Logger = LoggerFactory.getLogger( classOf[GQLClient])
+  val Logger: Logger = LoggerFactory.getLogger( classOf[GQLClient])
 
   // constructs a uri request with the specified headers
   def connect: HttpPost = {
@@ -100,8 +100,9 @@ case class ClientBuilder[ConnectionParameters <: ClientBuilder.ConnectionParamet
   connectionURL:String = "", // Required
   headers: List[(String, String)] = List()) // Optional
 {
+
   import ClientBuilder.ConnectionParameters._
-  val Logger = LoggerFactory.getLogger( classOf[ClientBuilder[ConnectionParameters]])
+  val Logger: Logger = LoggerFactory.getLogger( classOf[ClientBuilder[ConnectionParameters]])
 
   // copies and returns this object with connection Url modified
   def setConnectionURL(url: String): ClientBuilder[ConnectionParameters with ConnectionURL] = {
@@ -118,7 +119,7 @@ case class ClientBuilder[ConnectionParameters <: ClientBuilder.ConnectionParamet
   }
 
   // copies and returns this object with the headers stored in the data structure
-  def setAuthorization(authType: String, value: String) =
+  def setAuthorization(authType: String, value: String): ClientBuilder[ConnectionParameters with Empty] =
     this.setHeader("Authorization", authType + " " + value)
 
   // builds a github object

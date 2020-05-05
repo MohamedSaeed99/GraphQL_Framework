@@ -13,10 +13,10 @@ object Main extends App{
 //  val response : List[Node] = (githubObject.executeQuery(q))
 //  println(response)
 
-//  val q = new QueryCommand().setRepoQuery().build
-//  val response : List[Node] = (githubObject.executeQuery(q))
-//    .filter(Commits(_)(_<10).compare())
-//    .map(_.extract(List(GetCommitCount(), GetIssues(), GetLanguages(), GetPrimaryLanguage(), GetBody())))
+  val q = new QueryCommand().setRepoQuery().setLanguage(List("Java", "Python")).build
+  val response : List[Node] = (githubObject.executeQuery(q))
+    .filter(LanguageFilter(_)(_<3).compare()).filter(CommitsFilter(_)(_>10).compare())
+    .map(_.extract(List(GetCommitCount(), GetIssues(), GetLanguages(), GetPrimaryLanguage(), GetBody())))
 
 //
 //  val u1 = ((new QueryCommand()).setUserQuery().setUser("MDausch").build)

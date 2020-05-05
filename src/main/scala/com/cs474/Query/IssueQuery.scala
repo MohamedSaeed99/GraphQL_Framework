@@ -1,12 +1,14 @@
 package com.cs474.Query
 import org.slf4j.{Logger, LoggerFactory};
 
-// Filter status for the ISSUE type response
-case class Status(n: Node)(f: String=>Boolean){
-  val Logger = LoggerFactory.getLogger( classOf[Status])
+//filters the data based on the status of the issue
+case class StatusFilter(n: Node)(f: String=>Boolean){
+  val Logger: Logger = LoggerFactory.getLogger( classOf[StatusFilter])
+
+  // uses the lambda function to return a boolean for filter
   def compare(): Boolean={
     if(n.state.isEmpty) {
-      Logger.warn("States is Empty.")
+      Logger.warn("State attribute is empty.")
       false
     }
     else f(n.state.get)
@@ -22,12 +24,18 @@ case class IssueQuery(query:String, queryBuilder: IssueQueryBuilder) extends Que
 // IssueQuery builder that would build a type ISSUE search query
 case class IssueQueryBuilder(searchWord:String,cursor:String=null, query:String="") extends QueryBuilder{
 
+  val Logger: Logger = LoggerFactory.getLogger( classOf[IssueQueryBuilder])
+
+  // sets the cursor to get the next set of data
   def setCursor(c: String): IssueQueryBuilder = {
     this.copy(cursor= "\"" + c + "\"")
   }
 
-  // builds a github object
+  // builds a query object
   def build: IssueQuery = {
+
+    Logger.info("Building an Issue type query")
+
     // builds the query
     var newQuery = query
     newQuery = "{\"query\":\"" + "query listIssues($specifics:String!, $cursor:String) {"+

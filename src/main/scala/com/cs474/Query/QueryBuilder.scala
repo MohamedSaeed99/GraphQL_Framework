@@ -69,12 +69,14 @@ case class Search( count: Int,  edges: List[Edges] )
 case class Data( search: Search )
 case class JSONFormat( data: Data )
 
+
 //Abstract class for the different types of queries being built
 abstract class Query (query:String) {
   def queryString: String
   def builder: QueryBuilder
 }
 
+//Abstract class the is inherited by all query type builders
 abstract class QueryBuilder{
   def build: Query
   def setCursor(c: String): QueryBuilder
